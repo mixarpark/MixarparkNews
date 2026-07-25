@@ -28,12 +28,11 @@ rss_urls = [
     "https://www.roadtovr.com/feed/",
     "https://uploadvr.com/feed/"
 ]
+
+# Обновленные списки слов
 keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 'spatial audio', 'immsersive audio', 'mixed reality', 'phygital', 'spatial computing', 'interactive']
 exceptions = ['vr', 'virtual reality']
 
-# Обновленные списки слов
-keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'interactive']
-exceptions = ['vr', 'virtual reality']
 
 # ... внутри цикла, где бот перебирает новые статьи ...
 title_lower = article.title.lower()
