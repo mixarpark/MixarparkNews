@@ -1,0 +1,29 @@
+name: Run News Bot
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Автоматический запуск каждый день в 08:00 UTC
+  workflow_dispatch: # Добавляет кнопку для ручного запуска
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Скачивание кода
+        uses: actions/checkout@v3
+
+      - name: Установка Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Установка библиотек
+        run: |
+          pip install feedparser requests deep-translator
+
+      - name: Запуск скрипта
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python bot.py
