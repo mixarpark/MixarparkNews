@@ -34,24 +34,6 @@ keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', '
 exceptions = ['vr', 'virtual reality']
 
 
-# ... внутри цикла, где бот перебирает новые статьи ...
-title_lower = article.title.lower()
-summary_lower = article.summary.lower() # Если вы проверяете и текст новости
-
-# Условие 1: Ищем хотя бы одно совпадение по ключевым словам
-has_keyword = any(word in title_lower or word in summary_lower for word in keywords)
-
-# Условие 2: Ищем совпадения по стоп-словам
-has_exception = any(exc in title_lower or exc in summary_lower for exc in exceptions)
-
-# Применяем оператор and (есть нужное слово И нет стоп-слова)
-if has_keyword and not has_exception:
-    # Код отправки сообщения в Telegram
-    print(f"Отправляем: {article.title}")
-else:
-    print(f"Пропускаем: {article.title}")
-
-
 # 3. Загрузка истории
 history_file = "sent_articles.txt"
 if os.path.exists(history_file):
@@ -74,9 +56,23 @@ for url in rss_urls:
         # Отладочная печать: смотрим, какие новые статьи дошли до проверки
         print("🔍 Проверяем:", article.title)
 
+            
+        # Начало блока фильтрации (отступ 4 пробела от уровня for)
         title_lower = article.title.lower()
-        summary_lower = getattr(article, 'summary', '').lower()
+        # summary_lower = article.summary.lower() # Раскомментировать при необходимости
+            
+        has_keyword = any(word in title_lower for word in keywords)
+        has_exception = any(exc in title_lower for exc in exceptions)
+            
+        # Оператор if находится на том же уровне (4 пробела)
+        if has_keyword and not has_exception:
+            # Команды внутри if получают дополнительный отступ (+4 пробела)
+            print(f"Отправляем: {article.title}")
+        else:
+            print(f"Пропускаем: {article.title}")
 
+
+        
         for word in keywords:
             if word in title_lower or word in summary_lower:
                 translated_title = translator.translate(article.title)
