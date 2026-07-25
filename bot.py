@@ -31,7 +31,7 @@ rss_urls = [
 
 # Обновленные списки слов
 keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 'spatial audio', 'immsersive audio', 'mixed reality', 'phygital', 'spatial computing', 'interactive']
-exceptions = ['vr', 'virtual reality']
+exceptions = ['vr', 'VR', 'virtual reality']
 
 
 # 3. Загрузка истории
