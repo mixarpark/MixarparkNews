@@ -63,6 +63,10 @@ for url in rss_urls:
             
         has_keyword = any(word in title_lower for word in keywords)
         has_exception = any(exc in title_lower for exc in exceptions)
+         
+        # Выводим скрытые "мысли" бота в журнал (соблюдайте отступ):
+        print(f"🤖 Анализ: {title_lower} | Ключевые: {has_keyword} | Исключения: {has_exception}")
+            
             
         # Оператор if находится на том же уровне (4 пробела)
         if has_keyword and not has_exception:
