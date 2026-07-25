@@ -1,3 +1,9 @@
+import os
+
+# 1. Настройки Telegram
+# Скрипт будет брать значения из секретов GitHub
+bot_token = os.getenv('BOT_TOKEN')
+chat_id = os.getenv('CHAT_ID')
 
 import feedparser
 import requests
@@ -16,9 +22,6 @@ except ImportError:
 
     from deep_translator import GoogleTranslator
 
-# 1. Настройки Telegram
-bot_token = "8988626310:AAGYUHIB9Itmm5Sxh6rBNqJ_3-IGBawL3IM"
-chat_id = "6748957238"
 
 # 2. Настройки источников и фильтров
 rss_urls = [
