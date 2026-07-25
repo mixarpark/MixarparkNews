@@ -28,7 +28,29 @@ rss_urls = [
     "https://www.roadtovr.com/feed/",
     "https://uploadvr.com/feed/"
 ]
-keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 'spatial audio', 'immsersive audio', 'mixed reality', 'phygital', 'spatial computing']
+keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 'spatial audio', 'immsersive audio', 'mixed reality', 'phygital', 'spatial computing', 'interactive']
+exceptions = ['vr', 'virtual reality']
+
+# Обновленные списки слов
+keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'interactive']
+exceptions = ['vr', 'virtual reality']
+
+# ... внутри цикла, где бот перебирает новые статьи ...
+title_lower = article.title.lower()
+summary_lower = article.summary.lower() # Если вы проверяете и текст новости
+
+# Условие 1: Ищем хотя бы одно совпадение по ключевым словам
+has_keyword = any(word in title_lower or word in summary_lower for word in keywords)
+
+# Условие 2: Ищем совпадения по стоп-словам
+has_exception = any(exc in title_lower or exc in summary_lower for exc in exceptions)
+
+# Применяем оператор and (есть нужное слово И нет стоп-слова)
+if has_keyword and not has_exception:
+    # Код отправки сообщения в Telegram
+    print(f"Отправляем: {article.title}")
+else:
+    print(f"Пропускаем: {article.title}")
 
 
 # 3. Загрузка истории
