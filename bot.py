@@ -59,7 +59,7 @@ for url in rss_urls:
             
         # Начало блока фильтрации (отступ 4 пробела от уровня for)
         title_lower = article.title.lower()
-        # summary_lower = article.summary.lower() # Раскомментировать при необходимости
+        summary_lower = article.summary.lower() # Раскомментировать при необходимости
             
         has_keyword = any(word in title_lower for word in keywords)
         has_exception = any(exc in title_lower for exc in exceptions)
