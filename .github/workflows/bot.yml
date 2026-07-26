@@ -27,3 +27,10 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python bot.py
+      - name: Сохранение истории отправленных ссылок
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add sent_articles.txt
+          git commit -m "Обновление истории ссылок" || echo "Нет новых ссылок для сохранения"
+          git push
