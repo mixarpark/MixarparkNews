@@ -1,4 +1,4 @@
-import os
+pip install pdfplumber
 
 # 1. Настройки Telegram
 # Скрипт будет брать значения из секретов GitHub
