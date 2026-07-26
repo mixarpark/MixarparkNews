@@ -22,7 +22,7 @@ for file_name in all_files:
     full_path = os.path.join(folder_path, file_name)
 
     # 2. Открываем текущий файл в режиме чтения ("r")
-    with open(full_path, "r", encoding="utf-8") as file:
+    with open(full_path, "r", encoding="utf-8", errors="ignore") as file:
         text = file.read() # Читаем всё содержимое файла в переменную text
 
         # 3. Находим все ссылки в тексте файла
