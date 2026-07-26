@@ -32,6 +32,15 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python bot.py
+      
+      - name: Commit and push source links
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add source_links.txt
+          git commit -m "Автоматическое обновление базы ссылок" || echo "Нет новых изменений"
+          git push
+      
       - name: Сохранение истории отправленных ссылок
         run: |
           git config --local user.email "action@github.com"
