@@ -169,9 +169,10 @@ for url in rss_urls:
     else:
         # Если это настоящая RSS-лента, перебираем статьи по старой логике
         for article in feed.entries:
-            # ... (ваш текущий код проверки article.title и article.summary) ...
-
-
+            # ВАЖНО: эти команды должны иметь дополнительный отступ (+4 пробела) от слова for
+            title_lower = article.title.lower()
+            summary_lower = getattr(article, 'summary', '').lower()
+            # ... остальной код проверки и отправки ...
     
 
     for article in feed.entries:
