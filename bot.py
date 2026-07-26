@@ -114,10 +114,14 @@ except ImportError:
 
 
 # 2. Настройки источников и фильтров
-rss_urls = [
-    "https://www.roadtovr.com/feed/",
-    "https://uploadvr.com/feed/"
-]
+with open("source_links.txt", "r") as file:
+    rss_urls = file.read().splitlines()
+if os.path.exists("source_links.txt"):
+with open("source_links.txt", "r") as file:
+        rss_urls = file.read().splitlines()
+else:
+    rss_urls = []
+
 
 # Обновленные списки слов
 keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 'spatial audio', 'immsersive audio', 'mixed reality', 'phygital', 'spatial computing', 'interactive', 'smart glasses', 'ai']
