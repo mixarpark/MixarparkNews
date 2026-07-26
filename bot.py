@@ -11,6 +11,30 @@ import os
 import re
 import pdfplumber
 
+
+# Указываем путь к нашей новой папке
+folder_path = "library_files"
+# Получаем список всех файлов внутри
+all_files = os.listdir(folder_path)
+all_links = [] # Создаем пустой список для сбора ссылок со всех файлов
+
+# 1. Перебираем файлы по очереди
+for file_name in all_files:
+    # Создаем полный путь к конкретному файлу
+    full_path = os.path.join(folder_path, file_name)
+
+    # 2. Открываем текущий файл в режиме чтения ("r")
+    with open(full_path, "r", encoding="utf-8", errors="ignore") as file:
+        text = file.read() # Читаем всё содержимое файла в переменную text
+
+        # 3. Находим все ссылки в тексте файла
+        found_urls = re.findall(r"https?://[^\s\)]+", text)
+        
+        # 4. Добавляем найденные ссылки в общий список
+        all_links.extend(found_urls)
+
+
+
 def extract_links_from_pdf(file_path):
     all_text = ""
     try:
