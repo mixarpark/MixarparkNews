@@ -1,5 +1,3 @@
-pip install pdfplumber
-
 
 # 1. Настройки Telegram
 # Скрипт будет брать значения из секретов GitHub
@@ -11,30 +9,6 @@ import requests
 import os
 import re
 import pdfplumber
-
-# Указываем путь к нашей новой папке
-folder_path = "library_files"
-# Получаем список всех файлов внутри
-all_files = os.listdir(folder_path)
-all_links = [] # Создаем пустой список для сбора ссылок со всех файлов
-
-# 1. Перебираем файлы по очереди
-for file_name in all_files:
-    # Создаем полный путь к конкретному файлу
-    full_path = os.path.join(folder_path, file_name)
-
-    # 2. Открываем текущий файл в режиме чтения ("r")
-    with open(full_path, "r", encoding="utf-8", errors="ignore") as file:
-        text = file.read() # Читаем всё содержимое файла в переменную text
-
-        # 3. Находим все ссылки в тексте файла
-        found_urls = re.findall(r"https?://[^\s\)]+", text)
-        
-        # 4. Добавляем найденные ссылки в общий список
-        all_links.extend(found_urls)
-
-
-
 
 def extract_links_from_pdf(file_path):
     all_text = ""
@@ -69,6 +43,7 @@ if os.path.exists(folder_name):
     for file_name in os.listdir(folder_name):
         full_path = os.path.join(folder_name, file_name)
         
+
         # Обработка PDF-файлов
         if file_name.endswith(".pdf"):
             print(f"Обрабатываем PDF: {file_name}")
@@ -85,6 +60,7 @@ if os.path.exists(folder_name):
 unique_links = sorted(list(set(all_links)))
 
 # Открываем новый файл в режиме записи ("w" - write)
+output_file = "source_links.txt"
 with open("source_links.txt", "w", encoding="utf-8") as file:
     for link in unique_links:
         # Записываем каждую ссылку и добавляем невидимый символ переноса строки
