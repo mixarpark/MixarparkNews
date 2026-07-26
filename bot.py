@@ -1,5 +1,6 @@
 pip install pdfplumber
 
+
 # 1. Настройки Telegram
 # Скрипт будет брать значения из секретов GitHub
 bot_token = os.getenv('BOT_TOKEN')
