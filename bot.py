@@ -8,6 +8,7 @@ chat_id = os.getenv('CHAT_ID')
 import feedparser
 import requests
 import os
+import re
 from deep_translator import GoogleTranslator
 
 # Install missing libraries if not already installed
@@ -58,27 +59,29 @@ for url in rss_urls:
         summary_lower = article.summary.lower()
             
         # Проверяем ключевые слова и исключения сразу ВЕЗДЕ (и в заголовке, и в тексте)
-        has_keyword = any(word in title_lower or word in summary_lower for word in keywords)
-        has_exception = any(exc in title_lower or exc in summary_lower for exc in exceptions)
-         
+        has_keyword = any(re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower) for word in keywords)
+        has_exception = any(re.search(rf"\b{exc}\b", title_lower) or re.search(rf"\b{exc}\b", summary_lower) for exc in exceptions)
+
+
         # Выводим скрытые "мысли" бота в журнал:
         print(f"🤖 Анализ: {title_lower} | Ключевые: {has_keyword} | Исключения: {has_exception}")
-            
+
         # Если НЕТ ключевых слов ИЛИ ЕСТЬ исключение -> пропускаем
         if not has_keyword or has_exception:
             print(f"Пропускаем: {article.title}")
-            continue  # 🛑 ВАЖНО: Прерываем работу с этой статьей и идем к следующей
+            continue # 🛑 ВАЖНО: Прерываем работу с этой статьей и идем к следующей
             
         # Если код дошел сюда, значит статья идеальная (есть ключи, нет исключений)
         print(f"✅ Отправляем: {article.title}")
         
-        # Находим, какое именно слово сработало, чтобы добавить его в хештег
+        # Находим точное слово для хештега с помощью регулярных выражений
         found_word = "news" # Значение по умолчанию
         for word in keywords:
-            if word in title_lower or word in summary_lower:
+            if re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower):
                 found_word = word.replace(" ", "_") # Убираем пробелы для хештега (spatial audio -> #spatial_audio)
                 break
 
+        
         # Отправка в Telegram
         translated_title = translator.translate(article.title)
         
