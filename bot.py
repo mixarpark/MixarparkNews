@@ -91,8 +91,6 @@ with open(output_file, "w", encoding="utf-8") as f:
         f.write(link + "\n")
 
         
-# 4. Добавляем найденные ссылки в общий список
-        all_links.extend(found_urls)
 
 
 print(f"Найдено файлов: {len(all_files)}")
