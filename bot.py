@@ -114,13 +114,16 @@ except ImportError:
 
 
 # 2. Настройки источников и фильтров
-with open("source_links.txt", "r") as file:
+rss_urls = [
+    with open("source_links.txt", "r") as file:
     rss_urls = file.read().splitlines()
-if os.path.exists("source_links.txt"):
-with open("source_links.txt", "r") as file:
+    if os.path.exists("source_links.txt"):
+    with open("source_links.txt", "r") as file:
         rss_urls = file.read().splitlines()
-else:
+    else:
     rss_urls = []
+]
+
 
 
 # Обновленные списки слов
