@@ -139,7 +139,15 @@ print("Начинаем проверку лент...")
 
 # 4. Поиск, перевод и отправка
 for url in rss_urls:
-    feed = feedparser.parse(url)
+    print(f"📡 Подключаемся к: {url}")
+    try:
+        # Маскируемся под обычный браузер Chrome
+        feedparser.USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+        feed = feedparser.parse(url)
+    except Exception as e:
+        print(f"⚠️ Ошибка подключения к источнику. Пропускаем. Причина: {e}")
+        continue
+        
 
     for article in feed.entries:
         if article.link in sent_links:
