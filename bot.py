@@ -31,9 +31,20 @@ for file_name in all_files:
         # 4. Добавляем найденные ссылки в общий список
         all_links.extend(found_urls)
 
+# Очищаем список от дубликатов
+unique_links = set(all_links)
+
+# Открываем новый файл в режиме записи ("w" - write)
+with open("source_links.txt", "w", encoding="utf-8") as file:
+    for link in unique_links:
+        # Записываем каждую ссылку и добавляем невидимый символ переноса строки
+        file.write(link + "\n") 
+
+
 print(f"Найдено файлов: {len(all_files)}")
 print("Список файлов:", all_files)
 print(f"Всего найдено ссылок: {len(all_links)}")
+print(f"Готово! Сохранено уникальных ссылок: {len(unique_links)}")
 
 from deep_translator import GoogleTranslator
 
