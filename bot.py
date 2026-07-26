@@ -53,48 +53,49 @@ for url in rss_urls:
         if article.link in sent_links:
             continue
 
-        # Отладочная печать: смотрим, какие новые статьи дошли до проверки
-        print("🔍 Проверяем:", article.title)
-
-            
         # Начало блока фильтрации (отступ 4 пробела от уровня for)
         title_lower = article.title.lower()
-        summary_lower = article.summary.lower() # Раскомментировать при необходимости
+        summary_lower = article.summary.lower()
             
-        has_keyword = any(word in title_lower for word in keywords)
-        has_exception = any(exc in title_lower for exc in exceptions)
+        # Проверяем ключевые слова и исключения сразу ВЕЗДЕ (и в заголовке, и в тексте)
+        has_keyword = any(word in title_lower or word in summary_lower for word in keywords)
+        has_exception = any(exc in title_lower or exc in summary_lower for exc in exceptions)
          
-        # Выводим скрытые "мысли" бота в журнал (соблюдайте отступ):
+        # Выводим скрытые "мысли" бота в журнал:
         print(f"🤖 Анализ: {title_lower} | Ключевые: {has_keyword} | Исключения: {has_exception}")
             
-            
-        # Оператор if находится на том же уровне (4 пробела)
-        if has_keyword and not has_exception:
-            # Команды внутри if получают дополнительный отступ (+4 пробела)
-            print(f"Отправляем: {article.title}")
-        else:
+        # Если НЕТ ключевых слов ИЛИ ЕСТЬ исключение -> пропускаем
+        if not has_keyword or has_exception:
             print(f"Пропускаем: {article.title}")
-
-
+            continue  # 🛑 ВАЖНО: Прерываем работу с этой статьей и идем к следующей
+            
+        # Если код дошел сюда, значит статья идеальная (есть ключи, нет исключений)
+        print(f"✅ Отправляем: {article.title}")
         
+        # Находим, какое именно слово сработало, чтобы добавить его в хештег
+        found_word = "news" # Значение по умолчанию
         for word in keywords:
             if word in title_lower or word in summary_lower:
-                translated_title = translator.translate(article.title)
+                found_word = word.replace(" ", "_") # Убираем пробелы для хештега (spatial audio -> #spatial_audio)
+                break
 
-                message_text = (
-                    f"📰 Найдено по тегу #{word}\n\n"
-                    f"🇷🇺 {translated_title}\n"
-                    f"🇬🇧 {article.title}\n\n"
-                    f"🔗 {article.link}"
-                )
+        # Отправка в Telegram
+        translated_title = translator.translate(article.title)
+        
+        message_text = (
+            f"📰 Найдено по тегу #{found_word}\n\n"
+            f"🇷🇺 {translated_title}\n"
+            f"🇬🇧 {article.title}\n\n"
+            f"🔗 {article.link}"
+        )
 
-                tg_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-                requests.post(tg_api, data={"chat_id": chat_id, "text": message_text})
+        tg_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        requests.post(tg_api, data={"chat_id": chat_id, "text": message_text})
 
-                with open(history_file, "a") as file:
-                    file.write(article.link + "\n")
-
-                sent_links.append(article.link)
+        # Сохраняем ссылку, чтобы не отправить повторно
+        with open(history_file, "a") as file:
+            file.write(article.link + "\n")
+        sent_links.append(article.link)
                 break
 
 print("Проверка завершена!")
