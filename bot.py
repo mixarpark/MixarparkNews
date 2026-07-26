@@ -96,6 +96,6 @@ for url in rss_urls:
         with open(history_file, "a") as file:
             file.write(article.link + "\n")
         sent_links.append(article.link)
-                break
+                
 
 print("Проверка завершена!")
