@@ -9,6 +9,7 @@ import feedparser
 import requests
 import os
 import re
+import pdfplumber
 
 # Указываем путь к нашей новой папке
 folder_path = "library_files"
@@ -31,14 +32,69 @@ for file_name in all_files:
         # 4. Добавляем найденные ссылки в общий список
         all_links.extend(found_urls)
 
-# Очищаем список от дубликатов
-unique_links = set(all_links)
+
+
+
+def extract_links_from_pdf(file_path):
+    all_text = ""
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text:
+                    all_text += text + " "
+    except Exception as e:
+        print(f"Ошибка чтения PDF {file_path}: {e}")
+        
+    found_urls = re.findall(r"https?://[^\s\)]+", all_text)
+    return found_urls
+
+def extract_links_from_txt(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
+            text = file.read()
+            found_urls = re.findall(r"https?://[^\s\)]+", text)
+            return found_urls
+    except Exception as e:
+        print(f"Ошибка чтения TXT {file_path}: {e}")
+        return []
+
+# Основная директория с библиотекой файлов
+folder_name = "library_files"
+all_links = []
+
+# Проверяем наличие папки
+if os.path.exists(folder_name):
+    for file_name in os.listdir(folder_name):
+        full_path = os.path.join(folder_name, file_name)
+        
+        # Обработка PDF-файлов
+        if file_name.endswith(".pdf"):
+            print(f"Обрабатываем PDF: {file_name}")
+            links = extract_links_from_pdf(full_path)
+            all_links.extend(links)
+            
+        # Обработка текстовых файлов
+        elif file_name.endswith(".txt"):
+            print(f"Обрабатываем TXT: {file_name}")
+            links = extract_links_from_txt(full_path)
+            all_links.extend(links)
+
+# Удаляем дубликаты, оставляя только уникальные ссылки
+unique_links = sorted(list(set(all_links)))
 
 # Открываем новый файл в режиме записи ("w" - write)
 with open("source_links.txt", "w", encoding="utf-8") as file:
     for link in unique_links:
         # Записываем каждую ссылку и добавляем невидимый символ переноса строки
         file.write(link + "\n") 
+
+# Сохраняем результат в файл, к которому потом обратится бот
+output_file = "source_links.txt"
+with open(output_file, "w", encoding="utf-8") as f:
+    for link in unique_links:
+        f.write(link + "\n")
+
 
 
 print(f"Найдено файлов: {len(all_files)}")
