@@ -10,7 +10,7 @@ import requests
 import os
 import re
 import pdfplumber
-
+from bs4 import BeautifulSoup
 
 # Указываем путь к нашей новой папке
 folder_path = "library_files"
@@ -147,7 +147,32 @@ for url in rss_urls:
     except Exception as e:
         print(f"⚠️ Ошибка подключения к источнику. Пропускаем. Причина: {e}")
         continue
-        
+
+    # Если RSS-статьи не найдены, обрабатываем ссылку как обычную веб-страницу
+    if len(feed.entries) == 0:
+        print(f"🌐 Читаем как обычную страницу: {url}")
+        try:
+            # 1. Скачиваем сырой HTML-код
+            response = requests.get(url, timeout=10)
+            
+            # 2. Очищаем код от тегов, меню и скриптов
+            soup = BeautifulSoup(response.text, 'html.parser')
+            # Получаем чистый текст в нижнем регистре
+            full_clean_text = soup.get_text(separator=' ').lower()
+            
+            # (Здесь мы будем искать ключевые слова в full_clean_text)
+            
+        except Exception as e:
+            print(f"⚠️ Ошибка при скачивании страницы: {e}")
+            continue
+            
+    else:
+        # Если это настоящая RSS-лента, перебираем статьи по старой логике
+        for article in feed.entries:
+            # ... (ваш текущий код проверки article.title и article.summary) ...
+
+
+    
 
     for article in feed.entries:
         if article.link in sent_links:
