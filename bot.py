@@ -5,11 +5,6 @@ import os
 bot_token = os.getenv('BOT_TOKEN')
 chat_id = os.getenv('CHAT_ID')
 
-- name: Install dependencies
-  run: |
-    python -m pip install --upgrade pip
-    pip install feedparser requests deep-translator pdfplumber
-
 import feedparser
 import requests
 import os
