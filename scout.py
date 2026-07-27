@@ -125,8 +125,20 @@ for sub in SUBREDDITS:
     try:
         # Получаем 25 самых свежих постов (используем .json в конце URL для доступа к API)
         url = f"https://www.reddit.com/r/{sub}/new.json?limit=25"
+        
+        # Скачиваем через requests, маскируясь под браузер
         resp = requests.get(url, headers=HEADERS, timeout=REQ_TIMEOUT)
-        data = resp.json()
+        
+        # Проверяем статус-код (200 - всё ОК, 403/429 - нас заблокировали)
+        if resp.status_code != 200:
+            print(f"⚠️ Reddit заблокировал запрос (Код: {resp.status_code}). Пропускаем.")
+            continue
+            
+        try:
+            data = resp.json()
+        except Exception as e:
+            print(f"⚠️ Reddit вернул не JSON (возможно, страница с капчей). Пропускаем.")
+            continue
         
         for child in data.get('data', {}).get('children', []):
             post = child['data']
@@ -138,16 +150,14 @@ for sub in SUBREDDITS:
                 
                 # Если домен нам еще не известен
                 if domain and domain not in existing_domains:
-                    # Сохраняем корневой домен (например, https://example.com вместо https://example.com/article/1)
+                    # Сохраняем корневой домен
                     base_url = f"{urlparse(post_url).scheme}://{urlparse(post_url).netloc}"
                     found_external_urls.add(base_url)
                     
         time.sleep(1) # Уважаем правила Reddit, не спамим запросами
     except Exception as e:
         print(f"❌ Ошибка парсинга r/{sub}: {e}")
-
-print(f"🔍 Найдено потенциальных доменов-источников: {len(found_external_urls)}")
-
+        
 # Шаг 2: Ищем RSS на найденных доменах и валидируем их
 valid_new_sources = {}
 
