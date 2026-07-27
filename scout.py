@@ -187,7 +187,35 @@ if valid_new_sources:
         f.write("")
         
     # 3. Отправляем сообщение в ТГ, чтобы ты знал о пополнении базы
-    send_telegram_alert(valid_new_sources)
+    
+    def send_telegram_alert(new_sources):
+    """Отправляет отчет Разведчика в Telegram"""
+    if not new_sources:
+        return
+        
+    if not BOT_TOKEN or not CHAT_ID:
+        print("⚠️ Ошибка ТГ: Не найдены BOT_TOKEN или CHAT_ID. Сообщение не отправлено.")
+        return
+
+    text = "🕵️‍♂️ **Отчет Разведчика (Google Search API)**\n\nНайдено новых источников с RSS:\n\n"
+    for i, (title, url) in enumerate(new_sources.items(), 1):
+        text += f"{i}. {title}\n🔗 {url}\n\n"
+    text += "Они были автоматически добавлены в `source_links.txt`."
+    
+    tg_api = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    
+    try:
+        # Убрали parse_mode="Markdown", так как некоторые URL могут ломать разметку и вызывать ошибку 400
+        resp = requests.post(tg_api, data={"chat_id": CHAT_ID, "text": text}, timeout=10)
+        
+        if resp.status_code != 200:
+            print(f"⚠️ Ошибка отправки в Телеграм: {resp.status_code} - {resp.text}")
+        else:
+            print("✅ Отчет успешно отправлен в Telegram!")
+            
+    except Exception as e:
+        print(f"❌ Критическая ошибка при отправке в Телеграм: {e}")
+    
     print(f"🎉 Разведка завершена! {len(valid_new_sources)} новых источников добавлено в базу.")
 else:
     print("🤷‍♂️ Новых валидных источников сегодня не найдено.")
