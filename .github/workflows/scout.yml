@@ -3,7 +3,7 @@ name: Run RSS Scout
 on:
   schedule:
     - cron: '0 10 * * 6' # Каждую субботу в 10:00 UTC
-  workflow_dispatch:
+  workflow_dispatch: # Кнопка для ручного запуска
 
 permissions:
   contents: write
@@ -26,9 +26,11 @@ jobs:
           pip install requests beautifulsoup4 feedparser
 
       - name: Запуск Разведчика
+        # Здесь мы передаем секреты в наш Python-скрипт
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
         run: python scout.py
       
       - name: Сохранение карантинных ссылок
