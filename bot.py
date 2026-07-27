@@ -141,89 +141,131 @@ print("Начинаем проверку лент...")
 for url in rss_urls:
     print(f"📡 Подключаемся к: {url}")
     try:
-        # Маскируемся под обычный браузер Chrome
+        # Маскируемся под браузер Chrome
         feedparser.USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
         feed = feedparser.parse(url)
     except Exception as e:
         print(f"⚠️ Ошибка подключения к источнику. Пропускаем. Причина: {e}")
         continue
 
+    # ==========================================
+    # ЛОГИКА 1: ОБЫЧНЫЕ ВЕБ-СТРАНИЦЫ
+    # ==========================================
     # Если RSS-статьи не найдены, обрабатываем ссылку как обычную веб-страницу
     if len(feed.entries) == 0:
         print(f"🌐 Читаем как обычную страницу: {url}")
-        try:
-            # 1. Скачиваем сырой HTML-код
-            response = requests.get(url, timeout=10)
-            
-            # 2. Очищаем код от тегов, меню и скриптов
-            soup = BeautifulSoup(response.text, 'html.parser')
-            # Получаем чистый текст в нижнем регистре
-            full_clean_text = soup.get_text(separator=' ').lower()
-            
-            # (Здесь мы будем искать ключевые слова в full_clean_text)
-            
-        except Exception as e:
-            print(f"⚠️ Ошибка при скачивании страницы: {e}")
+        
+        # Проверяем историю перед скачиванием
+        if url in sent_links:
+            print(f"Пропускаем: {url} (уже отправлено)")
             continue
             
+        try:
+            # 1. Скачиваем и очищаем страницу, Скачиваем сырой HTML-код
+            response = requests.get(url, timeout=10)
+            # 2. Очищаем код от тегов, меню и скриптов
+            soup = BeautifulSoup(response.text, 'html.parser')
+            # 3. Получаем чистый текст в нижнем регистре
+            full_clean_text = soup.get_text(separator=' ').lower()
+            
+            # Проверяем ключевые слова и исключения с точными границами слов \b сразу ВЕЗДЕ (и в заголовке, и в тексте)
+            has_keyword = any(re.search(rf"\b{word}\b", full_clean_text) for word in keywords)
+            has_exception = any(re.search(rf"\b{exc}\b", full_clean_text) for exc in exceptions)
+
+            # Выводим скрытые "мысли" бота в журнал:
+            print(f"🤖 Анализ страницы | Ключевые: {has_keyword} | Исключения: {has_exception}")
+
+            # Если есть ключевые слова или исключение -> пропускаем
+            if has_keyword and not has_exception:
+                # Пытаемся безопасно получить заголовок страницы
+                page_title = soup.title.string.strip() if soup.title and soup.title.string else "Заголовок страницы не найден"
+                
+                # Если код дошел сюда, значит статья идеальная (есть ключи, нет исключений)
+                print(f"✅ Отправляем: {page_title}")
+
+                
+                # Находим слово для хештега с помощью регулярных выражений
+                found_word = "news" # Значение по умолчанию
+                for word in keywords:
+                    if re.search(rf"\b{word}\b", full_clean_text):
+                        found_word = word.replace(" ", "_") # Убираем пробелы для хештега (spatial audio -> #spatial_audio)
+                        break
+                
+                translated_title = translator.translate(page_title)
+                
+                # Формируем и отправляем сообщение
+                message_text = (
+                    f"📰 Найдено на странице по тегу #{found_word}\n\n"
+                    f"🇷🇺 {translated_title}\n"
+                    f"🇬🇧 {page_title}\n\n"
+                    f"🔗 {url}"
+                )
+                
+                tg_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+                requests.post(tg_api, data={"chat_id": chat_id, "text": message_text})
+                
+                # Сохраняем в историю
+                with open(history_file, "a") as file:
+                    file.write(url + "\n")
+                sent_links.append(url)
+            else:
+                print(f"Пропускаем: {url} (нет ключей или есть исключения)")
+
+        # (Здесь мы будем искать ключевые слова в full_clean_text)
+                
+        except Exception as e:
+            print(f"⚠️ Ошибка при скачивании страницы {url}: {e}")
+            continue
+
+    # ==========================================
+    # ЛОГИКА 2: СТАНДАРТНЫЕ RSS-ЛЕНТЫ
+    # ==========================================
     else:
         # Если это настоящая RSS-лента, перебираем статьи по старой логике
         for article in feed.entries:
             # ВАЖНО: эти команды должны иметь дополнительный отступ (+4 пробела) от слова for
+            if article.link in sent_links:
+                continue
+                
+            print("🔍 Проверяем:", article.title)
+
+            # Начало блока фильтрации (отступ 4 пробела от уровня for)
             title_lower = article.title.lower()
             summary_lower = getattr(article, 'summary', '').lower()
-            # ... остальной код проверки и отправки ...
-    
-
-    for article in feed.entries:
-        if article.link in sent_links:
-            continue
-
-        # Начало блока фильтрации (отступ 4 пробела от уровня for)
-        title_lower = article.title.lower()
-        summary_lower = article.summary.lower()
             
-        # Проверяем ключевые слова и исключения сразу ВЕЗДЕ (и в заголовке, и в тексте)
-        has_keyword = any(re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower) for word in keywords)
-        has_exception = any(re.search(rf"\b{exc}\b", title_lower) or re.search(rf"\b{exc}\b", summary_lower) for exc in exceptions)
-
-
-        # Выводим скрытые "мысли" бота в журнал:
-        print(f"🤖 Анализ: {title_lower} | Ключевые: {has_keyword} | Исключения: {has_exception}")
-
-        # Если НЕТ ключевых слов ИЛИ ЕСТЬ исключение -> пропускаем
-        if not has_keyword or has_exception:
-            print(f"Пропускаем: {article.title}")
-            continue # 🛑 ВАЖНО: Прерываем работу с этой статьей и идем к следующей
+            has_keyword = any(re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower) for word in keywords)
+            has_exception = any(re.search(rf"\b{exc}\b", title_lower) or re.search(rf"\b{exc}\b", summary_lower) for exc in exceptions)
             
-        # Если код дошел сюда, значит статья идеальная (есть ключи, нет исключений)
-        print(f"✅ Отправляем: {article.title}")
-        
-        # Находим точное слово для хештега с помощью регулярных выражений
-        found_word = "news" # Значение по умолчанию
-        for word in keywords:
-            if re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower):
-                found_word = word.replace(" ", "_") # Убираем пробелы для хештега (spatial audio -> #spatial_audio)
-                break
-
-        
-        # Отправка в Telegram
-        translated_title = translator.translate(article.title)
-        
-        message_text = (
-            f"📰 Найдено по тегу #{found_word}\n\n"
-            f"🇷🇺 {translated_title}\n"
-            f"🇬🇧 {article.title}\n\n"
-            f"🔗 {article.link}"
-        )
-
-        tg_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-        requests.post(tg_api, data={"chat_id": chat_id, "text": message_text})
-
-        # Сохраняем ссылку, чтобы не отправить повторно
-        with open(history_file, "a") as file:
-            file.write(article.link + "\n")
-        sent_links.append(article.link)
+            print(f"🤖 Анализ RSS: {title_lower} | Ключевые: {has_keyword} | Исключения: {has_exception}")
+            
+            if not has_keyword or has_exception:
+                print(f"Пропускаем: {article.title}")
+                continue
                 
+            print(f"✅ Отправляем: {article.title}")
+            
+            found_word = "news"
+            for word in keywords:
+                if re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower):
+                    found_word = word.replace(" ", "_")
+                    break
+
+            # Отправка в Telegram
+            translated_title = translator.translate(article.title)
+            
+            message_text = (
+                f"📰 Найдено по тегу #{found_word}\n\n"
+                f"🇷🇺 {translated_title}\n"
+                f"🇬🇧 {article.title}\n\n"
+                f"🔗 {article.link}"
+            )
+            
+            tg_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+            requests.post(tg_api, data={"chat_id": chat_id, "text": message_text})
+
+            # Сохраняем ссылку, чтобы не отправить повторно
+            with open(history_file, "a") as file:
+                file.write(article.link + "\n")
+            sent_links.append(article.link)
 
 print("Проверка завершена!")
