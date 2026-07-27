@@ -117,20 +117,27 @@ found_external_urls = set()
 
 # Шаг 1: Опрос Serper API
 for query in SEARCH_QUERIES:
-    print(f"📡 Ищем в Google: {query}")
+    print(f"📡 Ищем в Google (через Serper): {query}")
     try:
         url = "https://google.serper.dev/search"
-        payload = json.dumps({
-            "q": query,
-            "num": 15 # Берем топ-15 результатов по каждому запросу
-        })
+        
+        # Убрали json.dumps() и параметр num, чтобы исключить конфликт форматов
+        payload = {
+            "q": query
+        }
         headers = {
             'X-API-KEY': SERPER_API_KEY,
             'Content-Type': 'application/json'
         }
         
-        resp = requests.post(url, headers=headers, data=payload, timeout=REQ_TIMEOUT)
-        resp.raise_for_status()
+        # Передаем данные через параметр json= (requests сам всё правильно упакует)
+        resp = requests.post(url, headers=headers, json=payload, timeout=REQ_TIMEOUT)
+        
+        # Если статус не 200 (ОК), печатаем конкретную ошибку, которую вернул сервер!
+        if resp.status_code != 200:
+            print(f"⚠️ Ошибка от Serper (Код {resp.status_code}): {resp.text}")
+            continue
+            
         data = resp.json()
         
         # У Serper органическая выдача лежит в ключе 'organic'
@@ -147,7 +154,7 @@ for query in SEARCH_QUERIES:
                     
     except Exception as e:
         print(f"❌ Ошибка при запросе к Serper API: {e}")
-
+        
 print(f"🔍 Найдено уникальных потенциальных доменов: {len(found_external_urls)}")
 
 # Шаг 2: Поиск и валидация RSS на найденных сайтах
