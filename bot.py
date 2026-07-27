@@ -1,271 +1,190 @@
 import os
-
-# 1. Настройки Telegram
-# Скрипт будет брать значения из секретов GitHub
-bot_token = os.getenv('BOT_TOKEN')
-chat_id = os.getenv('CHAT_ID')
-
-import feedparser
-import requests
-import os
 import re
+import requests
+import feedparser
 import pdfplumber
 from bs4 import BeautifulSoup
+from deep_translator import GoogleTranslator
 
-# Указываем путь к нашей новой папке
-folder_path = "library_files"
-# Получаем список всех файлов внутри
-all_files = os.listdir(folder_path)
-all_links = [] # Создаем пустой список для сбора ссылок со всех файлов
+# ==========================================
+# 1. КОНФИГУРАЦИЯ И НАСТРОЙКИ
+# ==========================================
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+CHAT_ID = os.getenv('CHAT_ID')
 
+FOLDER_PATH = "library_files"
+SOURCE_LINKS_FILE = "source_links.txt"
+HISTORY_FILE = "sent_articles.txt"
 
+KEYWORDS = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 
+            'spatial audio', 'immsersive audio', 'mixed reality', 
+            'spatial computing', 'interactive', 'smart glasses', 'ai']
+EXCEPTIONS = ['vr', 'virtual reality']
 
-# 1. Перебираем файлы по очереди
-for file_name in all_files:
-    # Создаем полный путь к конкретному файлу
-    full_path = os.path.join(folder_path, file_name)
+# Предварительная компиляция регулярных выражений для СУПЕР-быстрого поиска
+# Ищем любое из ключевых слов как самостоятельное слово (без учета регистра)
+KW_PATTERN = re.compile(rf"\b({'|'.join(map(re.escape, KEYWORDS))})\b", re.IGNORECASE)
+EXC_PATTERN = re.compile(rf"\b({'|'.join(map(re.escape, EXCEPTIONS))})\b", re.IGNORECASE)
 
+# Заголовки для обхода блокировок парсинга
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+}
 
+translator = GoogleTranslator(source='auto', target='ru')
 
-
+# ==========================================
+# 2. ФУНКЦИИ ИЗВЛЕЧЕНИЯ ССЫЛОК
+# ==========================================
 def extract_links_from_pdf(file_path):
-    all_text = ""
+    found_urls = set()
     try:
         with pdfplumber.open(file_path) as pdf:
             for page in pdf.pages:
                 text = page.extract_text()
                 if text:
-                    all_text += text + " "
+                    # Ищем ссылки сразу на странице, не скапливая мега-строку
+                    urls = re.findall(r"https?://[^\s\)]+", text)
+                    found_urls.update(urls)
     except Exception as e:
-        print(f"Ошибка чтения PDF {file_path}: {e}")
-        
-    found_urls = re.findall(r"https?://[^\s\)]+", all_text)
+        print(f"❌ Ошибка чтения PDF {file_path}: {e}")
     return found_urls
 
 def extract_links_from_txt(file_path):
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
-            text = file.read()
-            found_urls = re.findall(r"https?://[^\s\)]+", text)
-            return found_urls
+            return set(re.findall(r"https?://[^\s\)]+", file.read()))
     except Exception as e:
-        print(f"Ошибка чтения TXT {file_path}: {e}")
-        return []
+        print(f"❌ Ошибка чтения TXT {file_path}: {e}")
+        return set()
 
-# Основная директория с библиотекой файлов
-folder_name = "library_files"
-all_links = []
+def send_to_telegram(title, url, keyword):
+    """Единая функция для перевода и отправки сообщения в Telegram"""
+    try:
+        translated_title = translator.translate(title)
+    except Exception as e:
+        print(f"⚠️ Ошибка перевода: {e}")
+        translated_title = title # Фолбек: отправляем без перевода, если API отвалился
 
-# Проверяем наличие папки
-if os.path.exists(folder_name):
-    for file_name in os.listdir(folder_name):
-        full_path = os.path.join(folder_name, file_name)
-        
+    hashtag = f"#{keyword.replace(' ', '_')}"
+    message_text = f"📰 Найдено по тегу {hashtag}\n\n🇷🇺 {translated_title}\n🇬🇧 {title}\n\n🔗 {url}"
+    
+    tg_api = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    try:
+        # Обязательно используем timeout!
+        requests.post(tg_api, data={"chat_id": CHAT_ID, "text": message_text}, timeout=10)
+    except Exception as e:
+        print(f"❌ Ошибка отправки в Telegram: {e}")
 
-        # Обработка PDF-файлов
-        if file_name.endswith(".pdf"):
-            print(f"Обрабатываем PDF: {file_name}")
-            links = extract_links_from_pdf(full_path)
-            all_links.extend(links)
+# ==========================================
+# 3. ПОДГОТОВКА ИСТОЧНИКОВ (ПАРСИНГ ПАПКИ)
+# ==========================================
+all_links = set() # Сразу используем множество для исключения дубликатов
+
+if os.path.exists(FOLDER_PATH):
+    all_files = os.listdir(FOLDER_PATH)
+    print(f"📁 Найдено файлов в {FOLDER_PATH}: {len(all_files)}")
+    
+    for file_name in all_files:
+        full_path = os.path.join(FOLDER_PATH, file_name)
+        if file_name.lower().endswith(".pdf"):
+            print(f"📄 Читаем PDF: {file_name}")
+            all_links.update(extract_links_from_pdf(full_path))
+        elif file_name.lower().endswith(".txt"):
+            print(f"📝 Читаем TXT: {file_name}")
+            all_links.update(extract_links_from_txt(full_path))
             
-        # Обработка текстовых файлов
-        elif file_name.endswith(".txt"):
-            print(f"Обрабатываем TXT: {file_name}")
-            links = extract_links_from_txt(full_path)
-            all_links.extend(links)
+    # Сохраняем уникальные ссылки
+    with open(SOURCE_LINKS_FILE, "w", encoding="utf-8") as f:
+        for link in sorted(all_links):
+            f.write(link + "\n")
+    print(f"✅ Готово! Сохранено уникальных ссылок: {len(all_links)}")
+else:
+    print(f"⚠️ Папка {FOLDER_PATH} не найдена.")
 
-# Удаляем дубликаты, оставляя только уникальные ссылки
-unique_links = sorted(list(set(all_links)))
-
-# Открываем новый файл в режиме записи ("w" - write)
-output_file = "source_links.txt"
-with open("source_links.txt", "w", encoding="utf-8") as file:
-    for link in unique_links:
-        # Записываем каждую ссылку и добавляем невидимый символ переноса строки
-        file.write(link + "\n") 
-
-# Сохраняем результат в файл, к которому потом обратится бот
-output_file = "source_links.txt"
-with open(output_file, "w", encoding="utf-8") as f:
-    for link in unique_links:
-        f.write(link + "\n")
-
-        
-
-
-print(f"Найдено файлов: {len(all_files)}")
-print("Список файлов:", all_files)
-print(f"Всего найдено ссылок: {len(all_links)}")
-print(f"Готово! Сохранено уникальных ссылок: {len(unique_links)}")
-
-from deep_translator import GoogleTranslator
-
-# Install missing libraries if not already installed
-try:
-    import feedparser
-except ImportError:
-
-    import feedparser
-try:
-    from deep_translator import GoogleTranslator
-except ImportError:
-
-    from deep_translator import GoogleTranslator
-
-
-# 2. Настройки источников и фильтров
-if os.path.exists("source_links.txt"):
-    with open("source_links.txt", "r") as file:
+# ==========================================
+# 4. ПОИСК, ФИЛЬТРАЦИЯ И ОТПРАВКА
+# ==========================================
+# Загрузка источников
+rss_urls = []
+if os.path.exists(SOURCE_LINKS_FILE):
+    with open(SOURCE_LINKS_FILE, "r", encoding="utf-8") as file:
         rss_urls = file.read().splitlines()
-else:
-    rss_urls = []
 
+# Загрузка истории (используем SET для быстрого поиска)
+sent_links = set()
+if os.path.exists(HISTORY_FILE):
+    with open(HISTORY_FILE, "r", encoding="utf-8") as file:
+        sent_links = set(file.read().splitlines())
 
-# Обновленные списки слов
-keywords = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 'spatial audio', 'immsersive audio', 'mixed reality', 'phygital', 'spatial computing', 'interactive', 'smart glasses', 'ai']
-exceptions = ['vr', 'virtual reality']
+print("\n🚀 Начинаем проверку лент...")
 
-
-# 3. Загрузка истории
-history_file = "sent_articles.txt"
-if os.path.exists(history_file):
-    with open(history_file, "r") as file:
-        sent_links = file.read().splitlines()
-else:
-    sent_links = []
-
-translator = GoogleTranslator(source='auto', target='ru')
-print("Начинаем проверку лент...")
-
-# 4. Поиск, перевод и отправка
 for url in rss_urls:
     print(f"📡 Подключаемся к: {url}")
+    
     try:
-        # Маскируемся под браузер Chrome
-        feedparser.USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-        feed = feedparser.parse(url)
+        # САМОЕ ВАЖНОЕ: Жесткий таймаут на запрос, чтобы скрипт не завис!
+        response = requests.get(url, headers=HEADERS, timeout=15)
+        # Отдаем скачанный контент feedparser'у
+        feed = feedparser.parse(response.content)
     except Exception as e:
-        print(f"⚠️ Ошибка подключения к источнику. Пропускаем. Причина: {e}")
+        print(f"⚠️ Ошибка сети или таймаут. Пропускаем. Причина: {e}")
         continue
 
-    # ==========================================
-    # ЛОГИКА 1: ОБЫЧНЫЕ ВЕБ-СТРАНИЦЫ
-    # ==========================================
-    # Если RSS-статьи не найдены, обрабатываем ссылку как обычную веб-страницу
-    if len(feed.entries) == 0:
-        print(f"🌐 Читаем как обычную страницу: {url}")
-        
-        # Проверяем историю перед скачиванием
+    # ================= ЛОГИКА: ОБЫЧНЫЕ ВЕБ-СТРАНИЦЫ =================
+    if not feed.entries:
         if url in sent_links:
-            print(f"Пропускаем: {url} (уже отправлено)")
+            print(f"⏭️ Пропускаем: {url} (уже отправлено)")
             continue
             
         try:
-            # 1. Скачиваем и очищаем страницу, Скачиваем сырой HTML-код
-            response = requests.get(url, timeout=10)
-            # 2. Очищаем код от тегов, меню и скриптов
             soup = BeautifulSoup(response.text, 'html.parser')
-            # 3. Получаем чистый текст в нижнем регистре
             full_clean_text = soup.get_text(separator=' ').lower()
             
-            # Проверяем ключевые слова и исключения с точными границами слов \b сразу ВЕЗДЕ (и в заголовке, и в тексте)
-            has_keyword = any(re.search(rf"\b{word}\b", full_clean_text) for word in keywords)
-            has_exception = any(re.search(rf"\b{exc}\b", full_clean_text) for exc in exceptions)
-
-            # Выводим скрытые "мысли" бота в журнал:
-            print(f"🤖 Анализ страницы | Ключевые: {has_keyword} | Исключения: {has_exception}")
-
-            # Если есть ключевые слова или исключение -> пропускаем
-            if has_keyword and not has_exception:
-                # Пытаемся безопасно получить заголовок страницы
-                page_title = soup.title.string.strip() if soup.title and soup.title.string else "Заголовок страницы не найден"
+            # Быстрый поиск через скомпилированные регулярки
+            match_kw = KW_PATTERN.search(full_clean_text)
+            match_exc = EXC_PATTERN.search(full_clean_text)
+            
+            print(f"🤖 Анализ | Ключи: {bool(match_kw)} | Исключения: {bool(match_exc)}")
+            
+            if match_kw and not match_exc:
+                page_title = soup.title.string.strip() if soup.title and soup.title.string else "Без заголовка"
+                found_word = match_kw.group(1).lower() # Достаем то самое слово, которое совпало
                 
-                # Если код дошел сюда, значит статья идеальная (есть ключи, нет исключений)
                 print(f"✅ Отправляем: {page_title}")
-
+                send_to_telegram(page_title, url, found_word)
                 
-                # Находим слово для хештега с помощью регулярных выражений
-                found_word = "news" # Значение по умолчанию
-                for word in keywords:
-                    if re.search(rf"\b{word}\b", full_clean_text):
-                        found_word = word.replace(" ", "_") # Убираем пробелы для хештега (spatial audio -> #spatial_audio)
-                        break
-                
-                translated_title = translator.translate(page_title)
-                
-                # Формируем и отправляем сообщение
-                message_text = (
-                    f"📰 Найдено на странице по тегу #{found_word}\n\n"
-                    f"🇷🇺 {translated_title}\n"
-                    f"🇬🇧 {page_title}\n\n"
-                    f"🔗 {url}"
-                )
-                
-                tg_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-                requests.post(tg_api, data={"chat_id": chat_id, "text": message_text})
-                
-                # Сохраняем в историю
-                with open(history_file, "a") as file:
+                with open(HISTORY_FILE, "a", encoding="utf-8") as file:
                     file.write(url + "\n")
-                sent_links.append(url)
-            else:
-                print(f"Пропускаем: {url} (нет ключей или есть исключения)")
-
-        # (Здесь мы будем искать ключевые слова в full_clean_text)
+                sent_links.add(url)
                 
         except Exception as e:
-            print(f"⚠️ Ошибка при скачивании страницы {url}: {e}")
-            continue
+            print(f"⚠️ Ошибка обработки HTML {url}: {e}")
 
-    # ==========================================
-    # ЛОГИКА 2: СТАНДАРТНЫЕ RSS-ЛЕНТЫ
-    # ==========================================
+    # ================= ЛОГИКА: RSS-ЛЕНТЫ =================
     else:
-        # Если это настоящая RSS-лента, перебираем статьи по старой логике
         for article in feed.entries:
-            # ВАЖНО: эти команды должны иметь дополнительный отступ (+4 пробела) от слова for
-            if article.link in sent_links:
+            link = getattr(article, 'link', '')
+            if not link or link in sent_links:
                 continue
                 
-            print("🔍 Проверяем:", article.title)
-
-            # Начало блока фильтрации (отступ 4 пробела от уровня for)
-            title_lower = article.title.lower()
-            summary_lower = getattr(article, 'summary', '').lower()
+            title = getattr(article, 'title', '')
+            summary = getattr(article, 'summary', '')
+            combined_text = f"{title} {summary}".lower()
             
-            has_keyword = any(re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower) for word in keywords)
-            has_exception = any(re.search(rf"\b{exc}\b", title_lower) or re.search(rf"\b{exc}\b", summary_lower) for exc in exceptions)
+            match_kw = KW_PATTERN.search(combined_text)
+            match_exc = EXC_PATTERN.search(combined_text)
             
-            print(f"🤖 Анализ RSS: {title_lower} | Ключевые: {has_keyword} | Исключения: {has_exception}")
-            
-            if not has_keyword or has_exception:
-                print(f"Пропускаем: {article.title}")
+            if not match_kw or match_exc:
                 continue
                 
-            print(f"✅ Отправляем: {article.title}")
+            found_word = match_kw.group(1).lower()
+            print(f"✅ Отправляем RSS: {title}")
             
-            found_word = "news"
-            for word in keywords:
-                if re.search(rf"\b{word}\b", title_lower) or re.search(rf"\b{word}\b", summary_lower):
-                    found_word = word.replace(" ", "_")
-                    break
-
-            # Отправка в Telegram
-            translated_title = translator.translate(article.title)
+            send_to_telegram(title, link, found_word)
             
-            message_text = (
-                f"📰 Найдено по тегу #{found_word}\n\n"
-                f"🇷🇺 {translated_title}\n"
-                f"🇬🇧 {article.title}\n\n"
-                f"🔗 {article.link}"
-            )
-            
-            tg_api = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-            requests.post(tg_api, data={"chat_id": chat_id, "text": message_text})
+            with open(HISTORY_FILE, "a", encoding="utf-8") as file:
+                file.write(link + "\n")
+            sent_links.add(link)
 
-            # Сохраняем ссылку, чтобы не отправить повторно
-            with open(history_file, "a") as file:
-                file.write(article.link + "\n")
-            sent_links.append(article.link)
-
-print("Проверка завершена!")
+print("🎉 Проверка успешно завершена!")
