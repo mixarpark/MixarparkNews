@@ -176,11 +176,18 @@ for base_url in found_external_urls:
 
 # Шаг 3: Сохранение и Уведомление
 if valid_new_sources:
-    with open(PENDING_FILE, "a", encoding="utf-8") as f:
+    # 1. Записываем ссылки сразу в ОСНОВНУЮ базу для бота
+    with open(EXISTING_SOURCES_FILE, "a", encoding="utf-8") as f:
         for title, url in valid_new_sources.items():
-            f.write(f"# {title}\n{url}\n")
-    
+            f.write(f"{url}\n")
+            
+    # 2. Очищаем файл карантина, так как мы всё добавили в базу
+    # (Создаем/перезаписываем пустой файл, чтобы git не ругался на его отсутствие)
+    with open(PENDING_FILE, "w", encoding="utf-8") as f:
+        f.write("")
+        
+    # 3. Отправляем сообщение в ТГ, чтобы ты знал о пополнении базы
     send_telegram_alert(valid_new_sources)
-    print(f"🎉 Разведка завершена! Найдено {len(valid_new_sources)} новых источников.")
+    print(f"🎉 Разведка завершена! {len(valid_new_sources)} новых источников добавлено в базу.")
 else:
     print("🤷‍♂️ Новых валидных источников сегодня не найдено.")
