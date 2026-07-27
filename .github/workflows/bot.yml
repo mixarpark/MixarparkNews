@@ -1,72 +1,46 @@
 name: Run News Bot
 
-
-
 on:
   schedule:
     - cron: '1 18 * * *' # Автоматический запуск каждый день в 18:01 UTC
-  workflow_dispatch: # Добавляет кнопку для ручного запуска
+  workflow_dispatch: # Кнопка для ручного запуска
+
+# ВАЖНО: Разрешаем боту делать git push обратно в репозиторий
+permissions:
+  contents: write
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
 
     steps:
-      # ШАГ 1: Скачиваем код из твоего репозитория на виртуальный сервер
-      - name: Checkout repository
+      - name: Скачивание кода
         uses: actions/checkout@v4
 
-      # ШАГ 2: Настраиваем Python
-      - name: Set up Python
+      - name: Установка Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # ШАГ 3: Теперь файл requirements.txt доступен, устанавливаем библиотеки
-      - name: Install dependencies
+      - name: Установка библиотек
+        # Устанавливаем все нужные библиотеки одной командой (requirements.txt больше не нужен)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-        
-      - name: Скачивание кода
-        uses: actions/checkout@v3
+          pip install feedparser requests beautifulsoup4 deep-translator pdfplumber
 
-      - name: Установка Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Установка библиотек
-        run: |
-          pip install feedparser requests deep-translator
-
-      - name: Установка библиотек
-        run: |
-          pip install beautifulsoup4
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install feedparser requests deep-translator pdfplumber
-    
       - name: Запуск скрипта
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+        # ВНИМАНИЕ: убедись, что твой файл со скриптом называется именно bot.py
+        # Если он называется иначе (например, main.py), поменяй название ниже!
         run: python bot.py
       
-      - name: Commit and push source links
+      - name: Сохранение результатов в GitHub (Commit and Push)
+        # Объединили два твоих шага с git push в один для скорости
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add source_links.txt
-          git commit -m "Автоматическое обновление базы ссылок" || echo "Нет новых изменений"
-          git push
-      
-      - name: Сохранение истории отправленных ссылок
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add sent_articles.txt
-          git commit -m "Обновление истории ссылок" || echo "Нет новых ссылок для сохранения"
+          git add source_links.txt sent_articles.txt
+          git commit -m "Автоматическое обновление базы ссылок и истории" || echo "Нет новых изменений"
           git push
