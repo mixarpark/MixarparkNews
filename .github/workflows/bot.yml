@@ -1,5 +1,7 @@
 name: Run News Bot
 
+
+
 on:
   schedule:
     - cron: '1 18 * * *' # Автоматический запуск каждый день в 18:01 UTC
@@ -10,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: установки
+        run: |
+          pip install -r requirements.txt
+        
       - name: Скачивание кода
         uses: actions/checkout@v3
 
