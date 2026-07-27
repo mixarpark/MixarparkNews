@@ -136,12 +136,17 @@ for sub in SUBREDDITS:
             
         try:
             data = resp.json()
-        except Exception as e:
-            print(f"⚠️ Reddit вернул не JSON (возможно, страница с капчей). Пропускаем.")
+        except Exception as json_err:
+            print(f"⚠️ Reddit вернул не JSON. Пропускаем. Ошибка: {json_err}")
             continue
         
-        for child in data.get('data', {}).get('children', []):
-            post = child['data']
+        # Защита от неожиданной структуры JSON
+        if not isinstance(data, dict) or 'data' not in data or 'children' not in data['data']:
+             print("⚠️ Неожиданный формат ответа от Reddit. Пропускаем.")
+             continue
+
+        for child in data['data']['children']:
+            post = child.get('data', {})
             post_url = post.get('url', '')
             
             # Пропускаем ссылки, ведущие на сам реддит (картинки, текстовые посты)
