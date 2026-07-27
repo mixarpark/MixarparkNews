@@ -79,19 +79,9 @@ def validate_rss(rss_url):
         # Проверяем последние 10 статей на наличие нужных слов
         for entry in feed.entries[:10]:
             title_summary = (getattr(entry, 'title', '') + " " + getattr(entry, 'summary', '')).lower()
-            # Скачиваем через requests, маскируясь под браузер
-            resp = requests.get(url, headers=HEADERS, timeout=REQ_TIMEOUT)
-        
-            # Проверяем статус-код (200 - всё ОК, 403/429 - нас заблокировали)
-            if resp.status_code != 200:
-            print(f"⚠️ Reddit заблокировал запрос (Код: {resp.status_code}). Пропускаем.")
-            continue
-            
-        try:
-            data = resp.json()
-        except Exception as e:
-            print(f"⚠️ Reddit вернул не JSON (возможно, страница с капчей). Пропускаем.")
-            continue
+            if any(kw.lower() in title_summary for kw in KEYWORDS):
+                # Нашли хотя бы одно совпадение — берем!
+                site_title = getattr(feed.feed, 'title', 'Неизвестный источник')
                 return True, site_title
                 
         return False, "Нет релевантных статей за последнее время"
@@ -162,7 +152,7 @@ for sub in SUBREDDITS:
         time.sleep(1) # Уважаем правила Reddit, не спамим запросами
     except Exception as e:
         print(f"❌ Ошибка парсинга r/{sub}: {e}")
-        
+
 # Шаг 2: Ищем RSS на найденных доменах и валидируем их
 valid_new_sources = {}
 
