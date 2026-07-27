@@ -37,6 +37,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add pending_sources.txt
+          git add pending_sources.txt source_links.txt
           git commit -m "Разведка: добавлены новые потенциальные источники" || echo "Нет новых источников"
           git push
