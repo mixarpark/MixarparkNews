@@ -1,11 +1,13 @@
 http://ieeevr.org/2023/contribute/papers/
 http://ieeevr.org/2025/program/papers/
+https://36kr.com/feed
 https://aimania.ru/ai/trend-hunter
 https://air.unipr.it/retrieve/e177fbc6-df89-50b0-e053-d805fe0adaee/297-PHE_VR_Cultural_Heritage.pdf
 https://alchemist.dk
 https://ar.snap.com
 https://arinsider.co
 https://arpost.co
+https://arpost.co/feed/
 https://ars.electronica.art
 https://ausimmersive.com/pages/sydney-city-digital-walking-tour
 https://awards.myportfolio.com/coca-cola-coachella-immersive-experience
@@ -35,6 +37,7 @@ https://gofukuoka.jp/articles/detail/3af28c1b-45dc-43a3-9b5b-de1d25048d8f
 https://gofuture.games/
 https://goroda.media/dobro-pozhalovat-v-atomgrady-pervye-ekskursii-s-dopolnennoy-realnostyu/
 https://grandvisual.com/work/pepsi-max-bus-shelter/
+https://habr.com/ru/rss/all/all/
 https://holographica.space/articles/arcona-petrozavodsk/
 https://ieeevr.org/2024/program/papers/
 https://ieeexplore.ieee.org/iel8/2945/11151252/11002522.pdf
@@ -45,6 +48,7 @@ https://lepetitchef.com
 https://lightroom.uk/about/
 https://lookingglassxr.com/virtual-reality-news-and-technology/
 https://milvus.io/ai-quick-reference/what-are-the-most-popular-ar-software-development-kits-sdks
+https://mixed-news.com/en/feed/
 https://mkto.deloitte.com/rs/712-CNF-326/images/DI_Tech-trends-2026.pdf
 https://mymodernmet.com/7-paintings-immersive-art-dining-experience/
 https://news.marriott.com/news/2022/07/12/lets-play-augmented-reality-takes-off-at-moxy-hotels-with-the-moxy-universe-play-beyond-asia-pacific-campaign
@@ -59,12 +63,16 @@ https://sanjosespotlight.com/immersive-art-experience-opens-in-downtown-san-jose
 https://scarredghost.com/
 https://sciencesport.ru/en/journals/tom-12-nos1-2024/articles/state-and-priority-directions-development-student-phygital
 https://soundstudiesblog.com
+https://soundstudiesblog.com/feed/
 https://soundtrails.com.au
+https://techcabal.com/feed/
+https://tecnoblog.net/feed/
 https://thehiveindex.com/topics/augmented-reality/
 https://thenewstack.io/metaverse-standards-forum/
 https://traviis.ai/edinburgh
 https://tribecafilm.com/festival/immersive
 https://uploadvr.com/
+https://uploadvr.com/feed/
 https://usomo.de/en/projekt/2023-maison-gainsbourg-with-soundwalk-collective-paris/
 https://usomo.de/en/projekt/2024-johann-strauss-museum-new-dimensions-vienna/
 https://variety.com/2026/digital/news/algorithmic-organisms-2-0-opens-kuala-lumpur-1236801509/
@@ -76,6 +84,7 @@ https://vrdb.app/news
 https://walklistencreate.org
 https://web-assets.bcg.com/34/d7/19023b7a4876b4732d5b0055ab69/2026-retail-predictions.pdf
 https://wegotrip.com
+https://wired.me/feed/
 https://workspace.ru/cases/ar-travel-putevoditel-s-dopolnennoy-realnostyu/
 https://worldphygital.org/
 https://worldphygital.org/news/games-of-the-future-2026-dates-and-disciplines-announced/,
@@ -136,8 +145,10 @@ https://www.mckinsey.com/industries/retail/our-insights
 https://www.mckinsey.com/~/media/mckinsey/business%20functions/mckinsey%20digital/our%20insights/the%20top%20trends%20in%20tech%202024/mckinsey-technology-trends-outlook-2024.pdf
 https://www.mckinsey.com/~/media/mckinsey/business%20functions/mckinsey%20digital/our%20insights/the%20top%20trends%20in%20tech%202025/mckinsey-technology-trends-outlook-2025.pdf
 https://www.meta.com/blog/chris-hemsworth-pratt-ray-ban-meta-ai-glasses-football-ad-campaign-2025/
+https://www.moguravr.com/feed
 https://www.museumnext.com
 https://www.museumnext.com/article/making-lost-palace/
+https://www.museumnext.com/feed/
 https://www.nationaltrust.org.uk/visit/devon/greenway/events/e8a12a12-27d5-4018-80a3-909293c0768e
 https://www.noproscenium.com
 https://www.omg.org/news/releases/pr2024/03-18-24.htm,
@@ -155,6 +166,7 @@ https://www.researchgate.net/
 https://www.retaildive.com/,
 https://www.retaildive.com/news/retailers-artifcial-intelligence-marketing-merchandising/806680/
 https://www.roadtovr.com/
+https://www.roadtovr.com/feed/
 https://www.roadtovr.com/mixed-reality/
 https://www.royalparks.org.uk/visit/parks/regents-park-primrose-hill/music-trees-mobile-app
 https://www.scribd.com/document/699800805/Accenture-Tech-Vision-2024
