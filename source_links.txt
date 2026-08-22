@@ -11,6 +11,9 @@ https://arpost.co/feed/
 https://ars.electronica.art
 https://ausimmersive.com/pages/sydney-city-digital-walking-tour
 https://awards.myportfolio.com/coca-cola-coachella-immersive-experience
+https://blog.siggraph.org/feed/
+https://blog.st.com/feed/
+https://blogs.nvidia.com/feed/
 https://boseprofessional.com/applications/case-studies/house-of-rituals
 https://camonapp.com/en/cases/hard-rock-cafe-messi/
 https://citiesandmemory.com
@@ -20,6 +23,7 @@ https://dealroom.co
 https://developer.apple.com/augmented-reality/
 https://developer.apple.com/videos/spatial-computing/
 https://developers.googleblog.com/en/search/?tag=ARCore
+https://digile.com/feed/
 https://drive.google.com/file/d/1yPEdwv3enHGTNe4H5FlO7w8NJeLUuQ8P/view?usp=share_link
 https://echoes.xyz
 https://en.darkmatter.berlin/skalar
@@ -50,10 +54,12 @@ https://lookingglassxr.com/virtual-reality-news-and-technology/
 https://milvus.io/ai-quick-reference/what-are-the-most-popular-ar-software-development-kits-sdks
 https://mixed-news.com/en/feed/
 https://mkto.deloitte.com/rs/712-CNF-326/images/DI_Tech-trends-2026.pdf
+https://muratbicak.com/feed/
 https://mymodernmet.com/7-paintings-immersive-art-dining-experience/
 https://news.marriott.com/news/2022/07/12/lets-play-augmented-reality-takes-off-at-moxy-hotels-with-the-moxy-universe-play-beyond-asia-pacific-campaign
 https://next.reality.news
 https://nexusstudios.com/work/storytrails-case-study/
+https://niemanreports.org/feed/
 https://ojs.sijm.it/index.php/sinergie/article/view/1841
 https://pimax.com/blogs/blogs/navigating-virtual-reality-top-news-websites-for-vr-news
 https://quetzales.mx/wp-content/uploads/2024/12/TR_Football_PhygitalSportsUSA_12012024-1.pdf
@@ -65,6 +71,7 @@ https://sciencesport.ru/en/journals/tom-12-nos1-2024/articles/state-and-priority
 https://soundstudiesblog.com
 https://soundstudiesblog.com/feed/
 https://soundtrails.com.au
+https://sowhen.fr/feed/
 https://techcabal.com/feed/
 https://tecnoblog.net/feed/
 https://thehiveindex.com/topics/augmented-reality/
@@ -179,6 +186,7 @@ https://www.stb.gov.sg/about-stb/media-publications/media-centre/google-and-sing
 https://www.sublimotionibiza.com
 https://www.sundance.org/festivals/sundance-film-festival/new-frontier/
 https://www.sxsw.com/exhibitions/sxsw-xr-experience/
+https://www.tdcommons.org/recent.rss
 https://www.theverge.com/augmented-reality
 https://www.thevrara.com/
 https://www.thevrara.com/chapters
@@ -191,11 +199,3 @@ https://www.worshipavl.com/details/80651-meyer-sound-transforms-grace-cathedral-
 https://www.yalinguth.com.au
 https://xrmust.com
 https://zubr.co/case-study/london-ar-trail/
-https://blog.siggraph.org/feed/
-https://sowhen.fr/feed/
-https://digile.com/feed/
-https://blogs.nvidia.com/feed/
-https://niemanreports.org/feed/
-https://www.tdcommons.org/recent.rss
-https://blog.st.com/feed/
-https://muratbicak.com/feed/
