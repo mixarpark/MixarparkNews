@@ -1,214 +1,210 @@
 import os
 import re
-import json
+import time
 import requests
 import feedparser
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
+from deep_translator import GoogleTranslator
 
 # ==========================================
-# 1. НАСТРОЙКИ И КОНСТАНТЫ
+# 1. КОНФИГУРАЦИЯ И АВТОРИЗАЦИЯ
 # ==========================================
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 CHAT_ID = os.getenv('CHAT_ID')
-SERPER_API_KEY = os.getenv('SERPER_API_KEY') # Ключ для поиска
+SERPER_API_KEY = os.getenv('SERPER_API_KEY')
 
-PENDING_FILE = "pending_sources.txt"
 EXISTING_SOURCES_FILE = "source_links.txt"
+REQ_TIMEOUT = 12
 
-# Формируем запросы для поиска блогов и новостей
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+}
+
+# ==========================================
+# 2. МАТРИЦА ЗАПРОСОВ (Phygital & Audio AR)
+# ==========================================
 SEARCH_QUERIES = [
-    '"audio augmented reality" blog OR news',
-    '"phygital" technology news',
-    '"spatial audio" AND "augmented reality" articles',
-    '"smart glasses" AR XR blog'
+    'phygital experience blog',
+    'spatial audio news',
+    'augmented reality smart glasses articles',
+    'location based entertainment insights',
+    'phygital retail case study',
+    'smart city urban tech blog',
+    'audio ar spatial computing pdf',
+    'immersive marketing strategy pdf'
 ]
 
-# Ключевые слова для валидации лент
-KEYWORDS = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 'spatial audio']
+# 18 целевых языков для перевода запросов
+TARGET_LANGUAGES = [
+    'es', 'pt', 'it', 'id', 'vi', 'hi', 'ur', 'tr', 'ka', 
+    'hy', 'kk', 'zh-CN', 'ru', 'de', 'fr', 'ar', 'ja', 'ko'
+]
 
-# Исключаем мусорные домены (соцсети, магазины)
+KEYWORDS = [
+    'phygital', 'phygital experience', 'phygital business', 'phygital integration',
+    'physical-digital', 'digital-physical', 'blended reality', 'blended experience',
+    'omnichannel experience', 'seamless experience', 'location-based experience',
+    'location-based entertainment', 'lbe', 'audio ar', 'audio augmented reality', 
+    'spatial audio', 'immersive audio', '3d audio', 'binaural audio', 'directional audio', 
+    'location-based audio', 'proximity audio', 'interactive audio', 'adaptive audio', 
+    'audio guide', 'smart guide', 'sonic branding', 'augmented reality', 'mixed reality', 
+    'spatial computing', 'spatial web', 'spatial mapping', 'smart glasses', 'ar glasses', 
+    'wearable tech', 'webxr', 'location-based ar', 'digital twin', 'digital twin city', 
+    'extended reality', 'xr', 'phygital marketing', 'phygital retail', 'ar marketing', 
+    'ar advertising', 'virtual try-on', 'ar try-on', 'smart mirror', 'interactive packaging',
+    'connected packaging', 'immersive retail', 'experiential marketing', 'virtual showroom', 
+    'interactive billboard', 'digital out-of-home', 'dooh', 'smart tourism', 'ar tourism', 
+    'smart destination', 'urban tech', 'smart city', 'connected city', 'digital guide', 
+    'interactive map', 'wayfinding', 'urban ar', 'public space activation', 'spatial design', 
+    'immersive design', 'product development', 'phygital product', 'ar developer', 'xr expert', 
+    'spatial computing developer', 'phygital expert', 'immersive technology'
+]
+
+EXCEPTIONS = [
+    'virtual reality', 'vr', 'fully virtual', 'vr headset', 'metaverse',
+    'ai', 'artificial intelligence', 'machine learning', 'generative ai',
+    'chatbot', 'automation', 'podcast', 'audiobook', 'music streaming', 
+    'stereo audio', 'digital marketing', 'email marketing', 'influencer marketing', 
+    'seo marketing'
+]
+
+KW_PATTERN = re.compile(rf"\b({'|'.join(map(re.escape, KEYWORDS))})\b", re.IGNORECASE)
+EXC_PATTERN = re.compile(rf"\b({'|'.join(map(re.escape, EXCEPTIONS))})\b", re.IGNORECASE)
+
 BLACKLIST_DOMAINS = {
-    'youtube.com', 'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
-    'wikipedia.org', 'amazon.com', 'reddit.com', 'pinterest.com', 'tiktok.com'
-}
-
-REQ_TIMEOUT = 10
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) NewsScoutBot/1.0"
+    'youtube.com', 'facebook.com', 'twitter.com', 'x.com', 'instagram.com',
+    'linkedin.com', 'wikipedia.org', 'amazon.com', 'reddit.com', 'pinterest.com',
+    'tiktok.com', 'quora.com', 'medium.com', 'apple.com', 'spotify.com'
 }
 
 # ==========================================
-# 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+# 3. ФУНКЦИИ ВАЛИДАЦИИ
 # ==========================================
-def get_existing_domains():
-    """Получает список уже известных доменов, чтобы не проверять их заново"""
+def get_existing_links():
     if not os.path.exists(EXISTING_SOURCES_FILE):
         return set()
     with open(EXISTING_SOURCES_FILE, "r", encoding="utf-8") as f:
-        urls = f.read().splitlines()
-    
-    domains = set()
-    for url in urls:
-        try:
-            domain = urlparse(url).netloc.replace("www.", "")
-            if domain: domains.add(domain)
-        except: pass
-    return domains
+        return {line.strip() for line in f if line.strip()}
 
 def find_rss_on_page(url):
-    """Ищет ссылку на RSS в HTML коде страницы"""
     try:
-        response = requests.get(url, headers=HEADERS, timeout=REQ_TIMEOUT)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        rss_links = soup.find_all('link', type=re.compile(r'application/(rss|atom)\+xml', re.IGNORECASE))
-        for link in rss_links:
-            href = link.get('href')
-            if href:
-                return urljoin(url, href)
-    except Exception as e:
-        print(f"⚠️ RSS не найден на {url} ({e})")
+        resp = requests.get(url, headers=HEADERS, timeout=REQ_TIMEOUT)
+        if resp.status_code == 200:
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            for link in soup.find_all('link', type=re.compile(r'application/(rss|atom)\+xml', re.IGNORECASE)):
+                href = link.get('href')
+                if href: return urljoin(url, href)
+    except: pass
     return None
 
 def validate_rss(rss_url):
-    """Проверяет, живая ли лента и есть ли в ней наши ключи"""
     try:
-        response = requests.get(rss_url, headers=HEADERS, timeout=REQ_TIMEOUT)
-        feed = feedparser.parse(response.content)
+        resp = requests.get(rss_url, headers=HEADERS, timeout=REQ_TIMEOUT)
+        feed = feedparser.parse(resp.content)
+        if not feed.entries: return False
         
-        if not feed.entries:
-            return False, "Лента пуста"
-            
         for entry in feed.entries[:10]:
-            title_summary = (getattr(entry, 'title', '') + " " + getattr(entry, 'summary', '')).lower()
-            if any(kw.lower() in title_summary for kw in KEYWORDS):
-                site_title = getattr(feed.feed, 'title', 'Неизвестный источник')
-                return True, site_title
-                
-        return False, "Нет релевантных статей"
-    except Exception as e:
-        return False, f"Ошибка парсинга: {e}"
+            text = f"{getattr(entry, 'title', '')} {getattr(entry, 'summary', '')}"
+            if KW_PATTERN.search(text) and not EXC_PATTERN.search(text):
+                return True
+    except: pass
+    return False
 
-def send_telegram_alert(new_sources):
-    """Отправляет отчет Разведчика в Telegram"""
-    if not new_sources:
-        return
-        
-    if not BOT_TOKEN or not CHAT_ID:
-        print("⚠️ Ошибка ТГ: Не найдены BOT_TOKEN или CHAT_ID. Сообщение не отправлено.")
-        return
-
-    text = "🕵️‍♂️ **Отчет Разведчика (Google Search API)**\n\nНайдено новых источников с RSS:\n\n"
-    for i, (title, url) in enumerate(new_sources.items(), 1):
-        text += f"{i}. {title}\n🔗 {url}\n\n"
-    text += "Они были автоматически добавлены в `source_links.txt`."
-    
-    tg_api = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    
+def validate_web_page_or_doc(url, snippet=""):
+    if snippet and KW_PATTERN.search(snippet) and not EXC_PATTERN.search(snippet):
+        return True
+    if url.lower().endswith('.pdf'):
+        return True
     try:
-        # Убрали parse_mode="Markdown", так как некоторые URL могут ломать разметку и вызывать ошибку 400
-        resp = requests.post(tg_api, data={"chat_id": CHAT_ID, "text": text}, timeout=10)
-        
-        if resp.status_code != 200:
-            print(f"⚠️ Ошибка отправки в Телеграм: {resp.status_code} - {resp.text}")
-        else:
-            print("✅ Отчет успешно отправлен в Telegram!")
-            
+        resp = requests.get(url, headers=HEADERS, timeout=REQ_TIMEOUT)
+        if resp.status_code == 200:
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            page_text = soup.get_text(separator=' ')
+            if KW_PATTERN.search(page_text) and not EXC_PATTERN.search(page_text):
+                return True
+    except: pass
+    return False
+
+def send_telegram_report(new_sources):
+    if not new_sources or not BOT_TOKEN or not CHAT_ID: return
+    text = (
+        f"🕵️‍♂️ <b>Отчет Разведчика (Phygital & Audio AR)</b>\n\n"
+        f"Глобальный поиск завершен. Добавлено в базу: <b>{len(new_sources)}</b> новых источников.\n"
+        f"<i>Основной бот проверит их при следующем запуске.</i>"
+    )
+    try:
+        requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", 
+                      data={"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}, timeout=10)
     except Exception as e:
-        print(f"❌ Критическая ошибка при отправке в Телеграм: {e}")
-    
-    tg_api = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    requests.post(tg_api, data={"chat_id": CHAT_ID, "text": text, "parse_mode": "Markdown"}, timeout=10)
+        print(f"⚠️ Ошибка отправки отчета: {e}")
 
 # ==========================================
-# 3. ОСНОВНАЯ ЛОГИКА (ПОИСК ЧЕРЕЗ SERPER.DEV)
+# 4. ОСНОВНОЙ ЦИКЛ ПОИСКА (МУЛЬТИЯЗЫЧНЫЙ)
 # ==========================================
-print("🚀 Разведчик начинает поиск через Serper (Google Search)...")
+print("🚀 Разведчик запускает глобальный мультиязычный поиск...")
 
 if not SERPER_API_KEY:
-    print("❌ Ошибка: Не задан ключ SERPER_API_KEY в секретах GitHub!")
+    print("❌ Ошибка: SERPER_API_KEY не задан!")
     exit(1)
 
-existing_domains = get_existing_domains()
-found_external_urls = set()
+existing_links = get_existing_links()
+discovered_items = [] 
 
-# Шаг 1: Опрос Serper API
-for query in SEARCH_QUERIES:
-    print(f"📡 Ищем в Google (через Serper): {query}")
-    try:
-        url = "https://google.serper.dev/search"
-        
-        # Убрали json.dumps() и параметр num, чтобы исключить конфликт форматов
-        payload = {
-            "q": query
-        }
-        headers = {
-            'X-API-KEY': SERPER_API_KEY,
-            'Content-Type': 'application/json'
-        }
-        
-        # Передаем данные через параметр json= (requests сам всё правильно упакует)
-        resp = requests.post(url, headers=headers, json=payload, timeout=REQ_TIMEOUT)
-        
-        # Если статус не 200 (ОК), печатаем конкретную ошибку, которую вернул сервер!
-        if resp.status_code != 200:
-            print(f"⚠️ Ошибка от Serper (Код {resp.status_code}): {resp.text}")
+for base_query in SEARCH_QUERIES:
+    for lang in TARGET_LANGUAGES:
+        try:
+            translated_query = GoogleTranslator(source='en', target=lang).translate(base_query)
+            print(f"📡 Поиск [{lang.upper()}]: {translated_query}")
+            
+            resp = requests.post(
+                "https://google.serper.dev/search",
+                headers={'X-API-KEY': SERPER_API_KEY, 'Content-Type': 'application/json'},
+                json={"q": translated_query, "num": 20, "hl": lang},
+                timeout=REQ_TIMEOUT
+            )
+            
+            if resp.status_code == 200:
+                for item in resp.json().get('organic', []):
+                    link = item.get('link', '')
+                    snippet = item.get('snippet', '')
+                    if link:
+                        domain = urlparse(link).netloc.replace("www.", "")
+                        if domain and not any(bl in domain for bl in BLACKLIST_DOMAINS) and link not in existing_links:
+                            discovered_items.append((link, snippet))
+                            
+            time.sleep(1) # Пауза для защиты от лимитов переводчика
+        except Exception as e:
+            print(f"❌ Сбой API ({lang.upper()}): {e}")
+
+print(f"🔍 Собрано кандидатов со всего мира: {len(discovered_items)}")
+
+valid_new_sources = set()
+
+for link, snippet in discovered_items:
+    if link in existing_links or link in valid_new_sources: continue
+    base_url = f"{urlparse(link).scheme}://{urlparse(link).netloc}"
+    
+    # Попытка 1: Ищем RSS
+    rss_url = find_rss_on_page(base_url)
+    if rss_url and rss_url not in existing_links:
+        if validate_rss(rss_url):
+            print(f"   [+] Добавлен RSS: {rss_url}")
+            valid_new_sources.add(rss_url)
+            existing_links.add(rss_url)
             continue
             
-        data = resp.json()
-        
-        # У Serper органическая выдача лежит в ключе 'organic'
-        items = data.get('organic', [])
-        for item in items:
-            link = item.get('link', '')
-            if link:
-                domain = urlparse(link).netloc.replace("www.", "")
-                
-                # Фильтруем дубли, блэклист и уже известные нам домены
-                if domain and domain not in existing_domains and not any(bl in domain for bl in BLACKLIST_DOMAINS):
-                    base_url = f"{urlparse(link).scheme}://{urlparse(link).netloc}"
-                    found_external_urls.add(base_url)
-                    
-    except Exception as e:
-        print(f"❌ Ошибка при запросе к Serper API: {e}")
-        
-print(f"🔍 Найдено уникальных потенциальных доменов: {len(found_external_urls)}")
+    # Попытка 2: Проверяем прямую страницу
+    if validate_web_page_or_doc(link, snippet):
+        print(f"   [+] Добавлена страница/PDF: {link}")
+        valid_new_sources.add(link)
+        existing_links.add(link)
 
-# Шаг 2: Поиск и валидация RSS на найденных сайтах
-valid_new_sources = {}
-
-for base_url in found_external_urls:
-    print(f"🔎 Ищем RSS на {base_url}...")
-    rss_url = find_rss_on_page(base_url)
-    
-    if rss_url:
-        print(f"   [+] Найден возможный RSS: {rss_url}")
-        is_valid, info = validate_rss(rss_url)
-        
-        if is_valid:
-            print(f"   ✅ ВАЛИДНО! {info}")
-            valid_new_sources[info] = rss_url
-        else:
-            print(f"   [-] Отклонено: {info}")
-
-# Шаг 3: Сохранение и Уведомление
 if valid_new_sources:
-    # 1. Записываем ссылки сразу в ОСНОВНУЮ базу для бота
     with open(EXISTING_SOURCES_FILE, "a", encoding="utf-8") as f:
-        for title, url in valid_new_sources.items():
+        for url in valid_new_sources:
             f.write(f"{url}\n")
-            
-    # 2. Очищаем файл карантина, так как мы всё добавили в базу
-    # (Создаем/перезаписываем пустой файл, чтобы git не ругался на его отсутствие)
-    with open(PENDING_FILE, "w", encoding="utf-8") as f:
-        f.write("")
-        
-    # 3. Отправляем сообщение в ТГ, чтобы ты знал о пополнении базы
-    
-    send_telegram_alert(valid_new_sources)
-    
-    print(f"🎉 Разведка завершена! {len(valid_new_sources)} новых источников добавлено в базу.")
+    send_telegram_report(valid_new_sources)
+    print(f"🎉 Разведка завершена! Добавлено {len(valid_new_sources)} новых источников.")
 else:
-    print("🤷‍♂️ Новых валидных источников сегодня не найдено.")
+    print("🤷‍♂️ Новых валидных источников в этом цикле не найдено.")
