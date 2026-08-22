@@ -16,10 +16,58 @@ FOLDER_PATH = "library_files"
 SOURCE_LINKS_FILE = "source_links.txt"
 HISTORY_FILE = "sent_articles.txt"
 
-KEYWORDS = ['ar', 'phygital', 'audio', 'immersive', 'xr', 'augmented reality', 
-            'spatial audio', 'immsersive audio', 'mixed reality', 
-            'spatial computing', 'interactive', 'smart glasses', 'ai']
-EXCEPTIONS = ['vr', 'virtual reality']
+# Keywords for News Parsing: Phygital, Audio AR, Spatial Computing, Smart City & Retail
+KEYWORDS = [
+    # --- Core Phygital & Blended Experiences ---
+    'phygital', 'phygital experience', 'phygital business', 'phygital integration',
+    'physical-digital', 'digital-physical', 'blended reality', 'blended experience',
+    'omnichannel experience', 'seamless experience', 'location-based experience',
+    'location-based entertainment', 'lbe',
+    
+    # --- Audio AR & Spatial Sound (Special Focus) ---
+    'audio ar', 'audio augmented reality', 'spatial audio', 'immersive audio',
+    '3d audio', 'binaural audio', 'directional audio', 'location-based audio',
+    'proximity audio', 'interactive audio', 'adaptive audio', 'audio guide',
+    'smart guide', 'sonic branding',
+    
+    # --- AR, MR & Spatial Computing ---
+    'augmented reality', 'mixed reality', 'spatial computing', 'spatial web',
+    'spatial mapping', 'smart glasses', 'ar glasses', 'wearable tech', 'webxr',
+    'location-based ar', 'digital twin', 'digital twin city', 'extended reality',
+    'xr',
+    
+    # --- Marketing, Retail & Business ---
+    'phygital marketing', 'phygital retail', 'ar marketing', 'ar advertising',
+    'virtual try-on', 'ar try-on', 'smart mirror', 'interactive packaging',
+    'connected packaging', 'immersive retail', 'experiential marketing',
+    'virtual showroom', 'interactive billboard', 'digital out-of-home', 'dooh',
+    
+    # --- Tourism & Urban Tech ---
+    'smart tourism', 'ar tourism', 'smart destination', 'urban tech', 'smart city',
+    'connected city', 'digital guide', 'interactive map', 'wayfinding', 'urban ar',
+    'public space activation',
+    
+    # --- Product Dev & Experts ---
+    'spatial design', 'immersive design', 'product development', 'phygital product',
+    'ar developer', 'xr expert', 'spatial computing developer', 'phygital expert',
+    'immersive technology'
+]
+
+# Exceptions to filter out pure VR, pure AI, audio noise, and generic digital marketing
+EXCEPTIONS = [
+    # Pure VR & Fully Digital Worlds
+    'virtual reality', 'vr', 'fully virtual', 'vr headset', 'metaverse',
+    
+    # Pure AI & Automation
+    'ai', 'artificial intelligence', 'machine learning', 'generative ai',
+    'chatbot', 'automation',
+    
+    # Audio Noise (Podcasts, Streaming)
+    'podcast', 'audiobook', 'music streaming', 'stereo audio',
+    
+    # Generic Digital Marketing
+    'digital marketing', 'email marketing', 'influencer marketing', 'seo marketing'
+]
 
 # Предварительная компиляция регулярных выражений для СУПЕР-быстрого поиска
 # Ищем любое из ключевых слов как самостоятельное слово (без учета регистра)
