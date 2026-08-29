@@ -58,6 +58,7 @@ https://blog.smartcity.com/feed/
 https://blog.st.com/feed/
 https://blogs.nvidia.com/feed/
 https://blogs.pucpr.br/marketing/wp-content/uploads/sites/17/2023/02/Experiencias-Imersivas-Desafios-e-Tendencias-para-as-Marcas-1.pdf
+https://blogs.uoc.edu/economia-empresa/es/que-es-la-experiencia-phygital/
 https://blogs.worldbank.org/en/sustainablecities/5-views-what-makes-city-smart
 https://bosebyupsv.com/am-thanh-khong-gian-la-gi/?srsltid=AfmBOoqVs-4XKEMcIIRxBSgUTvz0C-ghB0Hs1YxMRbYUi8paRMpQyqms
 https://boseprofessional.com/applications/case-studies/house-of-rituals
@@ -65,6 +66,7 @@ https://camonapp.com/en/cases/hard-rock-cafe-messi/
 https://carmanah.com/resources/what-is-a-smart-city/
 https://carrier.huawei.com/~/media/CNBGV2/download/bws2021/ar-insight-and-application-practice-white-paper-cn.pdf
 https://cdn.sanity.io/files/lj3txstz/production/44b7eaa742f7f2e7cd78780c3cf6d314f94b17ce.pdf
+https://cellainc.com/insights/blog/what-are-phygital-experiences-and-why-theyre-transforming-customer-engagement-in-2025/
 https://citiesandmemory.com
 https://citiesandmemory.com/2024/10/migration-sounds-at-the-pitt-rivers-museum-oxford/
 https://cnmat.berkeley.edu/sites/default/files/attachments/2013_The_Spatial_Sound_Description_Interchange_Format_Principles_Specificaton_Examples.pdf
@@ -79,6 +81,7 @@ https://dael.euracoustics.org/confs/fa2023/data/articles/000682.pdf
 https://dalfovo.com/ojs/index.php/reis/article/view/420
 https://datappeal.io/feed/
 https://dealroom.co
+https://dergipark.org.tr/tr/download/article-file/3201831
 https://developer.android.com/media/grow/spatial-audio?hl=ar
 https://developer.apple.com/augmented-reality/
 https://developer.apple.com/videos/spatial-computing/
@@ -89,6 +92,7 @@ https://digitalcommons.csumb.edu/cgi/viewcontent.cgi?article=1781&context=caps_t
 https://dl.acm.org/doi/10.1145/3772318.3791961
 https://dokumen.pub/creating-augmented-and-virtual-realities-theory-and-practice-for-next-generation-spatial-computing-1492044199-9781492044192.html
 https://drawandcode.com/feed/
+https://drimify.com/it/risorse/3-esempi-ispirazione-esperienze-phygital/
 https://drive.google.com/file/d/1yPEdwv3enHGTNe4H5FlO7w8NJeLUuQ8P/view?usp=share_link
 https://echoes.xyz
 https://eek.ee/download.php?t=kb&dok=p1gvedrsrhk0816qt1nnep5n165n3.pdf
@@ -149,6 +153,7 @@ https://kingbee.vn/phygital-customer-loyalty/
 https://knowledge.wharton.upenn.edu/wp-content/uploads/2019/02/9965.pdf
 https://lakedistrict.gov.uk/route/feel-the-force-audio-trail/
 https://lapdatamthanh.com/tin-tuc/am-thanh-khong-gian.html?srsltid=AfmBOooje5Hzz3g7-sALSJS56KPXjpMKhOup7rKdIE1y-NNtg7P-vV_F
+https://lapdatamthanh.com/tin-tuc/am-thanh-khong-gian.html?srsltid=AfmBOoqUH1HcVZ9Tb0dZCKZC6jkX-gdhi7iUD2qBzZ3nTw8rOuuOHgkQ
 https://lapdatamthanh.com/tin-tuc/am-thanh-khong-gian.html?srsltid=AfmBOoqXGqI4hTiRhcsGnWpL9ZkW6yCoQAN4PFzpvmVxUGTs12pchx36
 https://lepetitchef.com
 https://lightroom.uk/about/
@@ -242,9 +247,11 @@ https://tckhtm.tmu.edu.vn/upload/news/files/177b7pdf-1685027266.pdf
 https://techcabal.com/feed/
 https://techmoa.tistory.com/18
 https://techsound.vn/blogs/news/am-thanh-3d-khong-gian-thuc-cuoc-choi-tiep-theo-cua-loa-the-he-moi?srsltid=AfmBOopqUV3zZclSOuGgkvLF12VRJe3Lh6Zkiaq9AiLQJ-YI3k8t4iDB
+https://techsound.vn/blogs/news/tim-hieu-ve-spatial-audio-va-tuong-lai-cua-am-thanh-3d?srsltid=AfmBOooK_3a7EDvrw--kuyePUMPTvaEPjDpi5FXE5NoxKJJRD8k9m_Uz
 https://tecnoblog.net/feed/
 https://telaio.com.mx/blog/experiencia-phygital-mas-que-una-tendencia-una-oportunidad-de-destacar/
 https://test.visionlabs.ru/blog/chto-takoe-umnyy-gorod
+https://thanhnien.vn/spatial-audio-tags607441.html
 https://thehiveindex.com/topics/augmented-reality/
 https://thenewstack.io/metaverse-standards-forum/
 https://thesai.org/Downloads/Volume10No10/Paper_64-Immersive_Technologies_in_Marketing.pdf
@@ -353,16 +360,20 @@ https://www.emerald.com/qmr/article/27/3/388/1220862/Phygital-customer-journey-a
 https://www.emergentmind.com/
 https://www.enchantedforest.org.uk/
 https://www.enel.com/it/learning-hub/smart-city
+https://www.esmet.com.ar/blog/experiencia-phygital-revolucionando-la-forma-de-consumir?srsltid=AfmBOopXO1wD78nsO6t7_0l1iOmAt74S5blHuTUrgYFdQXvTapjDI2k-
 https://www.eurecom.fr/publication/5358/download/comsys-publi-5358.pdf
 https://www.fastcompany.com/technology/augmented-reality
 https://www.fhfa.gov/document/d/ua/lya_readme_2013
 https://www.florianweidner.de/content/paper/ISMAR2025-Arefin-Replication.pdf
+https://www.flowerista.it/il-phygital-come-modello-esperienziale-un-ponte-tra-mondo-fisico-e-digitale/
+https://www.forbes.com/sites/blakemorgan/2022/05/16/the-rise-of-the-phygital-experience/
 https://www.forbes.com/sites/blakemorgan/2023/08/02/the-top-15-best-examples-of-phygital-customer-experiences/
 https://www.fortics.com.br/varejo-phygital-e-varejo-omnichannel/
 https://www.fortunebusinessinsights.com/extended-reality-market-106637
 https://www.fortunebusinessinsights.com/fr/location-based-entertainment-market-110163
 https://www.fortunebusinessinsights.com/ko/location-based-entertainment-market-110163
 https://www.fortunebusinessinsights.com/pt/location-based-entertainment-market-110163
+https://www.fullstory.com/blog/phygital-experience/
 https://www.fundacionaquae.org/ciudades-inteligentes/
 https://www.futurecommerce.com/episodes
 https://www.fynd.com/ebooks/prc-report-2025
@@ -394,6 +405,7 @@ https://www.industryresearch.biz/zh/market-reports/location-based-entertainment-
 https://www.infobip.com/blog/what-is-phygital-marketing
 https://www.infosysbpm.com/offerings/functions/bpm-analytics/insights/documents/the-emergence-of-immersive-advertising.pdf
 https://www.insidemarketing.it/feed/
+https://www.insidemarketing.it/glossario/definizione/phygital/
 https://www.intelvision.ru/blog/smartcity
 https://www.ipsos.com/sites/default/files/ct/publication/documents/2024-08/Snapchat%20x%20Ipsos%20-%20Exploring%20Trends%20in%20Luxury%202024.pdf
 https://www.ironbridge.it/francescaortolani/ASL/appunti/Appunti/L2%20-%20Fondamenti%20di%20Audio%20Digitale.pdf
@@ -448,6 +460,7 @@ https://www.pace.edu.vn/tin-kho-tri-thuc/phygital-marketing-la-gi
 https://www.pavegen.com/blog/how-does-smart-tech-shape-a-smart-city
 https://www.pbs.org/video/ellen-reids-griffith-park-soundscape-w44ncd/
 https://www.peaktech.com/blog/the-phygital-revolution-blending-physical-and-digital-retail-experiences/
+https://www.pearsonjournal.com/index.php/pub/article/view/466
 https://www.phygital-insights.com/case-studies
 https://www.portcom.intercom.org.br/pdfs/149801003222230945765212217541460451734.pdf
 https://www.priority-software.com/resources/phygital-retail/
@@ -495,6 +508,7 @@ https://www.scribd.com/document/699800805/Accenture-Tech-Vision-2024
 https://www.scribd.com/document/814879777/Accenture-Tech-Vision-2025
 https://www.scribd.com/document/919395807/History-of-Spatial-Computing
 https://www.scribd.com/document/975105163/Untitled-Document-2
+https://www.semanticscholar.org/paper/M%C3%BC%C5%9Fteri-Deneyiminde-%C3%9C%C3%A7%C3%BCnc%C3%BC-Alan%3A-Fijital-Deneyim-Arma%C4%9Fan-Arma%C4%9Fan/fd4abd6a4d694fedb6e32897f64e79caffac7009
 https://www.sequra.com/es/post/como-aplicar-experiencia-phygital-en-retail
 https://www.serpentinegalleries.org/art-and-ideas/sound-gallery-in-a-garden-by-brian-eno/
 https://www.siemens.com/pt-pt/products/simatic-ident/location-intelligence/
@@ -534,6 +548,7 @@ https://www.visitdublin.com/dublin-discovery-trails
 https://www.w3.org/news/2022/w3c-joins-leading-standards-organizations-and-companies-to-coordinate-interoperability-standards-for-an-open-and-inclusive-metaverse/
 https://www.wavetec.com/blog/phygital-customer-experience/
 https://www.weareproject.com/tech-insight/smat_city_guida_alla_trasformazione_urbana/
+https://www.webioo.com.tr/blog/fijital-phygital-deneyim-2026-nin-yeni-nesil-ticaret-stratejisi
 https://www.wired.com/tag/augmented-reality/
 https://www.worshipavl.com/details/80651-meyer-sound-transforms-grace-cathedral-with-immersive-installation
 https://www.yalinguth.com.au
@@ -541,18 +556,3 @@ https://xrmust.com
 https://yazokulu.bilimakademisi.org/yapayogrenme/2018/sunumlar/hakanerdogan-byoyo18.pdf
 https://zapt.tech/blog/inovacao/phygital-a-juncao-do-mundo-fisico-ao-digital/
 https://zubr.co/case-study/london-ar-trail/
-https://www.flowerista.it/il-phygital-come-modello-esperienziale-un-ponte-tra-mondo-fisico-e-digitale/
-https://cellainc.com/insights/blog/what-are-phygital-experiences-and-why-theyre-transforming-customer-engagement-in-2025/
-https://lapdatamthanh.com/tin-tuc/am-thanh-khong-gian.html?srsltid=AfmBOoqUH1HcVZ9Tb0dZCKZC6jkX-gdhi7iUD2qBzZ3nTw8rOuuOHgkQ
-https://thanhnien.vn/spatial-audio-tags607441.html
-https://techsound.vn/blogs/news/tim-hieu-ve-spatial-audio-va-tuong-lai-cua-am-thanh-3d?srsltid=AfmBOooK_3a7EDvrw--kuyePUMPTvaEPjDpi5FXE5NoxKJJRD8k9m_Uz
-https://blogs.uoc.edu/economia-empresa/es/que-es-la-experiencia-phygital/
-https://www.semanticscholar.org/paper/M%C3%BC%C5%9Fteri-Deneyiminde-%C3%9C%C3%A7%C3%BCnc%C3%BC-Alan%3A-Fijital-Deneyim-Arma%C4%9Fan-Arma%C4%9Fan/fd4abd6a4d694fedb6e32897f64e79caffac7009
-https://www.insidemarketing.it/glossario/definizione/phygital/
-https://www.webioo.com.tr/blog/fijital-phygital-deneyim-2026-nin-yeni-nesil-ticaret-stratejisi
-https://www.forbes.com/sites/blakemorgan/2022/05/16/the-rise-of-the-phygital-experience/
-https://www.fullstory.com/blog/phygital-experience/
-https://www.pearsonjournal.com/index.php/pub/article/view/466
-https://dergipark.org.tr/tr/download/article-file/3201831
-https://drimify.com/it/risorse/3-esempi-ispirazione-esperienze-phygital/
-https://www.esmet.com.ar/blog/experiencia-phygital-revolucionando-la-forma-de-consumir?srsltid=AfmBOopXO1wD78nsO6t7_0l1iOmAt74S5blHuTUrgYFdQXvTapjDI2k-
