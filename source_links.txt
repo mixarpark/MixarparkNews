@@ -10,6 +10,7 @@ https://168.am/2025/03/30/2191036.html
 https://36kr.com/feed
 https://3dnews.ru/tags/%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9%20%D0%B7%D0%B2%D1%83%D0%BA
 https://academy.technikum-wien.at/ratgeber/was-ist-augmented-reality/
+https://acg.media.mit.edu/people/simong/transfers/layout.pdf
 https://aclanthology.org/2025.acl-long.98.pdf
 https://agenciaf2f.com/experiencia-phygital-integracao-loja-fisica-digital/
 https://agenciafg.com.br/2024/08/13/experiencia-phygital/
@@ -187,6 +188,7 @@ https://next.reality.news
 https://nexusstudios.com/work/storytrails-case-study/
 https://niemanreports.org/feed/
 https://ntrs.nasa.gov/api/citations/20110008295/downloads/20110008295.pdf
+https://oaib.org.tr/Uploads/haberler_view/bbd8fe0c44ab1f3b09171f489eeac2b3.pdf
 https://ojs.sijm.it/index.php/sinergie/article/view/1841
 https://online.hse.ru/blog/statyi/mozhno-vopros/chto-takoe-umnye-goroda-i-kak-oni-ustroeny
 https://online.pucrs.br/blog/experiencia-phygital
@@ -263,6 +265,7 @@ https://tim.org.tr/download/ada15745c0eb47bc862949768dba669b/5.%C4%B0hracat%C4%B
 https://tinhte.vn/thread/spatial-audio-cua-apple-music-dang-am-tham-lam-giam-chat-luong-ban-thu-nhu-the-nao.4147964/
 https://toplink.ee/wp-content/uploads/2014/10/marketingmanagment.pdf
 https://traviis.ai/edinburgh
+https://treeview.studio/blog/spatial-computing-complete-guide
 https://tribecafilm.com/festival/immersive
 https://trurating.com/blog/phygital-retail/
 https://tt-lab.jp/smartglass/wp-content/uploads/2026/03/%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88%E3%82%B0%E3%83%A9%E3%82%B9%E3%81%AE%E6%BD%AE%E6%B5%81-2.pdf
@@ -303,6 +306,7 @@ https://woxi.digital/blog/que-es-la-experiencia-phygital-el-concepto-que-revoluc
 https://www.8thwall.com/blog
 https://www.8thwall.com/customer-work/bully-whoppa-on-a-whopper
 https://www.aardman.com/latest-news/2024/july/aardman-roll-out-popular-interactive-ar-trail-apps/
+https://www.academia.edu/96146734/An_Audio_Based_3D_Spatial_Guidance_AR_System_for_Blind_Users
 https://www.adsoftheworld.com/campaigns/escape-to-a-malfy-world
 https://www.aircards.co/work/nike-air
 https://www.akzh.ru/pdf/2015_2_254-273.pdf
@@ -352,7 +356,9 @@ https://www.dezeen.com/tag/augmented-reality/
 https://www.diendan.org/khoa-hoc-ky-thuat/duong-di-va-den-cua-am-thanh-2/Lo%20den%20v2-12-08-last.pdf
 https://www.diva-portal.org/smash/get/diva2:1449181/FULLTEXT01.pdf
 https://www.droidshop.vn/feed/
+https://www.e-ucebnici.mon.gov.mk/pdf/8_21_Marketing%20i%20marketing%20menadzment_Tur-PRINT.pdf
 https://www.echo3d.com/post/top-10-ar-developer-tools-every-developer-should-know
+https://www.eek.ee/download.php?t=kb&dok=p1f4q087j51eifjm1n1g1mmhrvrd.pdf
 https://www.egta.com/egtabite-416/
 https://www.ellenreidsoundwalk.com
 https://www.emerald.com/jsm/article/doi/10.1108/JSM-09-2025-0707/1360422/Enhancing-phygital-employee-experience-in-high
@@ -556,9 +562,3 @@ https://xrmust.com
 https://yazokulu.bilimakademisi.org/yapayogrenme/2018/sunumlar/hakanerdogan-byoyo18.pdf
 https://zapt.tech/blog/inovacao/phygital-a-juncao-do-mundo-fisico-ao-digital/
 https://zubr.co/case-study/london-ar-trail/
-https://oaib.org.tr/Uploads/haberler_view/bbd8fe0c44ab1f3b09171f489eeac2b3.pdf
-https://acg.media.mit.edu/people/simong/transfers/layout.pdf
-https://www.eek.ee/download.php?t=kb&dok=p1f4q087j51eifjm1n1g1mmhrvrd.pdf
-https://treeview.studio/blog/spatial-computing-complete-guide
-https://www.academia.edu/96146734/An_Audio_Based_3D_Spatial_Guidance_AR_System_for_Blind_Users
-https://www.e-ucebnici.mon.gov.mk/pdf/8_21_Marketing%20i%20marketing%20menadzment_Tur-PRINT.pdf
